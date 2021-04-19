@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SharedKernel;
 
 namespace KnowledgeBase.Domain
@@ -6,6 +7,6 @@ namespace KnowledgeBase.Domain
     {
         public string Title { get; set; }
         public string Answer { get; set; }
-        public LinkedTag[] LinkedTags { get; set; }
+        public ICollection<LinkedTag> LinkedTags { get; set; }
     }
 }

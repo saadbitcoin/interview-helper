@@ -25,7 +25,15 @@ namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
 
         public Task<Question> GetQuestion(int id)
         {
-            return Task.FromResult(_context.Questions.First(x => x.Id == id));
+            var entry = _context.Questions.First(x => x.Id == id);
+            _context.Entry(entry).Collection(x => x.LinkedTags).Load();
+
+            foreach (var linkedTag in entry.LinkedTags)
+            {
+                _context.Entry(linkedTag).Reference(x => x.Tag).Load();
+            }
+
+            return Task.FromResult(entry);
         }
 
         public Task<Question[]> GetQuestions(LinkedTag tag)
