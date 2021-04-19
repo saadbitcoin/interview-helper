@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using KnowledgeBase.Domain;
 
-namespace KnowledgeBase.Answer
+namespace KnowledgeBase.Application.Repositories
 {
     public interface IQuestionsRepository
     {

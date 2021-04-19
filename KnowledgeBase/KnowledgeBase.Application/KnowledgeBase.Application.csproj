@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KnowledgeBase.Domain\KnowledgeBase.Domain.csproj" />
+    <ProjectReference Include="..\..\SharedKernel\SharedKernel.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
