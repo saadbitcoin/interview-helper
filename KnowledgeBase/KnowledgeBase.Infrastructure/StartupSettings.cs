@@ -13,6 +13,8 @@ namespace KnowledgeBase.Infrastructure
             services.AddDbContext<KnowledgeBaseContext>(options => options.UseNpgsql(connectionString));
 
             services.AddTransient<IQuestionsRepository, QuestionsRepository>();
+            services.AddTransient<ILinkedTagsRepository, LinkedTagsRepository>();
+            services.AddTransient<ITagsRepository, TagsRepository>();
         }
     }
 }

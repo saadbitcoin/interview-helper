@@ -16,6 +16,8 @@ namespace KnowledgeBase.Infrastructure.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Tag>().HasIndex(x => x.Title).IsUnique();
+
             modelBuilder.Entity<Question>(x => x.HasMany(x => x.LinkedTags));
             modelBuilder.Entity<Tag>(x => x.HasMany<LinkedTag>().WithOne(x => x.Tag));
         }

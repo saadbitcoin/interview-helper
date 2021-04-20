@@ -1,3 +1,4 @@
+using System.Linq;
 using AutoMapper;
 using KnowledgeBase.Domain;
 using KnowledgeBase.WebAPI.Models;
@@ -13,8 +14,16 @@ namespace KnowledgeBase.WebAPI
         {
             CreateMap<AddQuestionDTO, AddQuestionUseCase.Request>()
                 .ForMember(
-                    destination => destination.Data,
-                    x => x.MapFrom(src => new Question { Answer = src.Answer, Title = src.Question })
+                    destination => destination.Answer,
+                    x => x.MapFrom(src => src.Answer)
+                )
+                .ForMember(
+                    destination => destination.Title,
+                    x => x.MapFrom(src => src.Question)
+                )
+                .ForMember(
+                    destination => destination.InitialTags,
+                    x => x.MapFrom(x => x.Tags)
                 );
 
             CreateMap<AddQuestionUseCase.Response, AddQuestionResultDTO>()
