@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const WebpackDotenv = require("dotenv-webpack");
 
 module.exports = {
     mode: "development",
@@ -14,10 +15,13 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js"],
         plugins: [new TsconfigPathsPlugin()]
     },
-    plugins: [new HtmlWebpackPlugin({
-        template: path.join(__dirname, "index.html"),
-        filename: "index.html"
-    })],
+    plugins: [
+        new WebpackDotenv(),
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, "index.html"),
+            filename: "index.html"
+        })
+    ],
     module: {
         rules: [
             { test: /.tsx?$/, loader: "ts-loader" }
