@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using KnowledgeBase.Application.Repositories;
 using KnowledgeBase.Domain;
@@ -14,17 +13,29 @@ namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
             _context = context;
         }
 
-        public async Task<int> AddTag(Tag target)
+        public Task<int> AddNewTag(string name)
         {
-            _context.Tags.Add(target);
-            await _context.SaveChangesAsync();
-
-            return target.Id;
+            throw new System.NotImplementedException();
         }
 
-        public Task<Tag> GetTag(string title)
+        public Task AddNewTagValues(int tagId, string[] values)
         {
-            return Task.FromResult(_context.Tags.FirstOrDefault(x => x.Title == title));
+            throw new System.NotImplementedException();
+        }
+
+        public Task<string[]> GetAllTagNames()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<Tag> GetTagById(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<Tag> GetTagByName(string name)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

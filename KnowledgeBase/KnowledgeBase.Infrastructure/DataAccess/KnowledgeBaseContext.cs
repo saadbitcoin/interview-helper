@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using KnowledgeBase.Domain;
+using KnowledgeBase.Infrastructure.DataAccess.Models;
+using System;
 
 namespace KnowledgeBase.Infrastructure.DataAccess
 {
@@ -10,16 +12,9 @@ namespace KnowledgeBase.Infrastructure.DataAccess
             Database.EnsureCreated();
         }
 
-        public DbSet<Question> Questions { get; set; }
+        public DbSet<TagTableRepresentation> Tags { get; set; }
         public DbSet<LinkedTag> LinkedTags { get; set; }
-        public DbSet<Tag> Tags { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Tag>().HasIndex(x => x.Title).IsUnique();
-
-            modelBuilder.Entity<Question>(x => x.HasMany(x => x.LinkedTags));
-            modelBuilder.Entity<Tag>(x => x.HasMany<LinkedTag>().WithOne(x => x.Tag));
-        }
+        public DbSet<QuestionLinkedTag> QuestionLinkedTags { get; set; }
+        public DbSet<QuestionTableRepresentation> Questions { get; set; }
     }
 }

@@ -1,63 +1,113 @@
-
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KnowledgeBase.Application.Repositories;
 using KnowledgeBase.Domain;
+using KnowledgeBase.Infrastructure.DataAccess.InternalRepositories;
+using KnowledgeBase.Infrastructure.DataAccess.Models;
 
 namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
 {
     internal class QuestionsRepository : IQuestionsRepository
     {
-        private readonly KnowledgeBaseContext _context;
+        private readonly QuestionTableRepresentationsRepository _questionTableRepresentationsRepository;
+        private readonly QuestionLinkedTagsRepository _questionLinkedTagsRepository;
+        private readonly LinkedTagsRepository _linkedTagsRepository;
+        private readonly TagTableRepresentationsRepository _tagTableRepresentationsRepository;
 
-        public QuestionsRepository(KnowledgeBaseContext context)
+
+        public QuestionsRepository(QuestionTableRepresentationsRepository questionTableRepresentationsRepository,
+            QuestionLinkedTagsRepository questionLinkedTagsRepository, LinkedTagsRepository linkedTagsRepository,
+            TagTableRepresentationsRepository tagTableRepresentationsRepository)
         {
-            _context = context;
+            _questionTableRepresentationsRepository = questionTableRepresentationsRepository;
+            _questionLinkedTagsRepository = questionLinkedTagsRepository;
+            _linkedTagsRepository = linkedTagsRepository;
+            _tagTableRepresentationsRepository = tagTableRepresentationsRepository;
         }
 
         public async Task<int> AddQuestion(Question target)
         {
-            _context.Questions.Add(target);
-            await _context.SaveChangesAsync();
+            var questionTableRepresentation = new QuestionTableRepresentation
+            {
+                Title = target.Title,
+                Answer = target.Answer,
+                Id = target.Id
+            };
+            await _questionTableRepresentationsRepository.Add(questionTableRepresentation);
 
-            return target.Id;
+            foreach (var tag in target.TagsInformation)
+            {
+                var tagTableRepresentation = _tagTableRepresentationsRepository.GetByName(tag.Key);
+
+                if (tagTableRepresentation == null)
+                {
+                    tagTableRepresentation = new TagTableRepresentation { Name = tag.Key };
+                    await _tagTableRepresentationsRepository.Add(tagTableRepresentation);
+                }
+
+                foreach (var tagValue in tag.Value)
+                {
+                    var linkedTag = _linkedTagsRepository.GetByTagIdAndValue(tagTableRepresentation.Id, tagValue);
+                    if (linkedTag == null)
+                    {
+                        linkedTag = new LinkedTag { TagId = tagTableRepresentation.Id, Value = tagValue };
+                        await _linkedTagsRepository.Add(linkedTag);
+                    }
+
+                    await _questionLinkedTagsRepository.Add(new QuestionLinkedTag { LinkedTagId = linkedTag.Id, QuestionId = questionTableRepresentation.Id });
+                }
+            }
+
+            return questionTableRepresentation.Id;
         }
 
         public Task<Question> GetQuestion(int id)
         {
-            var entry = _context.Questions.First(x => x.Id == id);
-            _context.Entry(entry).Collection(x => x.LinkedTags).Load();
+            var tableRepresentation = _questionTableRepresentationsRepository.GetById(id);
 
-            foreach (var linkedTag in entry.LinkedTags)
+            if (tableRepresentation == null)
             {
-                _context.Entry(linkedTag).Reference(x => x.Tag).Load();
+                return Task.FromResult(null as Question);
             }
 
-            return Task.FromResult(entry);
+            var linkedTags = _questionLinkedTagsRepository.GetByQuestionId(id).Select(_linkedTagsRepository.GetByQuestionLinkedTag);
+
+            var tagsData = new Dictionary<string, List<string>>();
+            foreach (var currentTag in linkedTags)
+            {
+                var tag = _tagTableRepresentationsRepository.GetByLinkedTag(currentTag);
+                var tagName = tag.Name;
+                if (!tagsData.ContainsKey(tagName))
+                {
+                    tagsData.Add(tagName, new List<string>());
+                }
+
+                tagsData[tagName].Add(currentTag.Value);
+            }
+
+            return Task.FromResult(new Question
+            {
+                Answer = tableRepresentation.Answer,
+                TagsInformation = tagsData,
+                Title = tableRepresentation.Title,
+                Id = tableRepresentation.Id
+            });
         }
 
-        public Task<Question[]> GetQuestions(LinkedTag tag)
+        public Task<Question[]> GetQuestions(string tag, string[] tagValues)
         {
-            return Task.FromResult(_context.Questions.Where(x => x.LinkedTags.Any(x => x.AreSame(tag))).ToArray());
+            throw new System.NotImplementedException();
         }
 
-        public Task<Question[]> GetQuestions(LinkedTag[] tags)
+        public Task<Question[]> GetQuestions(Dictionary<string, string[]> tagsInformation)
         {
-            return Task.FromResult(
-                _context.Questions.Where(x =>
-                    tags.Any(
-                        sourceTag => x.LinkedTags.Any(questionTag => questionTag.AreSame(sourceTag))
-                    )
-                )
-                .ToArray()
-            );
+            throw new System.NotImplementedException();
         }
 
-        public async Task RemoveQuestion(int id)
+        public Task RemoveQuestion(int id)
         {
-            var requiredQuestion = _context.Questions.First(x => x.Id == id);
-            _context.Questions.Remove(requiredQuestion);
-            await _context.SaveChangesAsync();
+            throw new System.NotImplementedException();
         }
     }
 }

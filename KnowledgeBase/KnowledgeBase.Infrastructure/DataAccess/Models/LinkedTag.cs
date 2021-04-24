@@ -1,10 +1,10 @@
 using SharedKernel;
 
-namespace KnowledgeBase.Domain
+namespace KnowledgeBase.Infrastructure.DataAccess.Models
 {
     public class LinkedTag : IdentifiedEntity
     {
-        public Tag Tag { get; set; }
+        public int TagId { get; set; }
         public string Value { get; set; }
     }
 }
