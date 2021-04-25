@@ -25,5 +25,10 @@ namespace KnowledgeBase.Infrastructure.DataAccess.InternalRepositories
 
             return target.Id;
         }
+
+        public QuestionLinkedTag[] GetByLinkedTag(LinkedTag source)
+        {
+            return _context.QuestionLinkedTags.Where(x => x.LinkedTagId == source.Id).ToArray();
+        }
     }
 }

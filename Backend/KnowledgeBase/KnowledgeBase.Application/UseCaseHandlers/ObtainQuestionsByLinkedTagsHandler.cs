@@ -13,11 +13,9 @@ namespace KnowledgeBase.Application.UseCaseHandlers
             _questionsRepository = questionsRepository;
         }
 
-        public async Task<Response> Handle(Request requestData)
+        public Task<Response> Handle(Request requestData)
         {
-            var result = await _questionsRepository.GetQuestions(requestData.Source);
-
-            return new Response { Result = result };
+            throw new System.NotImplementedException();
         }
     }
 }

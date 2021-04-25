@@ -94,14 +94,20 @@ namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
             });
         }
 
-        public Task<Question[]> GetQuestions(string tag, string[] tagValues)
+        public Task<Question[]> GetQuestions(string tagName, string[] tagValues)
         {
-            throw new System.NotImplementedException();
-        }
+            var tag = _tagTableRepresentationsRepository.GetByName(tagName);
 
-        public Task<Question[]> GetQuestions(Dictionary<string, string[]> tagsInformation)
-        {
-            throw new System.NotImplementedException();
+            if (tag == null)
+            {
+                return Task.FromResult(new Question[] { });
+            }
+
+            var linkedTags = tagValues.Select(x => _linkedTagsRepository.GetByTagIdAndValue(tag.Id, x)).Where(x => x != null);
+            var questionIds = linkedTags.SelectMany(x => _questionLinkedTagsRepository.GetByLinkedTag(x)).Select(x => x.QuestionId);
+            var getQuestionTasks = questionIds.Select(x => GetQuestion(x));
+
+            return Task.FromResult(getQuestionTasks.Select(x => x.Result).ToArray());
         }
 
         public Task RemoveQuestion(int id)
