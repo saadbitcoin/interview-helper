@@ -1,6 +1,6 @@
 import { KnowledgeBaseQuestion } from "Models";
 
-class KnowledgeBaseAPIClient {
+class KnowledgeBaseQuestionsAPIClient {
     public constructor(private endpoint: string) {}
 
     public async getById(id: number) {
@@ -34,8 +34,8 @@ class KnowledgeBaseAPIClient {
     }
 }
 
-const knowledgeBaseAPIClient = new KnowledgeBaseAPIClient(
+const knowledgeBaseQuestionsAPIClient = new KnowledgeBaseQuestionsAPIClient(
     process.env.KNOWLEDGE_BASE_API_ENDPOINT!
 );
 
-export { knowledgeBaseAPIClient };
+export { knowledgeBaseQuestionsAPIClient };
