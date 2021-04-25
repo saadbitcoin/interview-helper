@@ -25,5 +25,18 @@ namespace KnowledgeBase.Infrastructure.DataAccess.InternalRepositories
 
             return source.Id;
         }
+
+        public async Task Remove(int questionId)
+        {
+            var requiredQuestion = _context.Questions.FirstOrDefault(x => x.Id == questionId);
+
+            if (requiredQuestion == null)
+            {
+                return;
+            }
+
+            _context.Questions.Remove(requiredQuestion);
+            await _context.SaveChangesAsync();
+        }
     }
 }

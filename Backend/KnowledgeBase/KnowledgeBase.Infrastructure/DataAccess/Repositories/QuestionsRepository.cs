@@ -110,9 +110,9 @@ namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
             return Task.FromResult(getQuestionTasks.Select(x => x.Result).Where(x => x != null).ToArray());
         }
 
-        public Task RemoveQuestion(int id)
+        public async Task RemoveQuestion(int id)
         {
-            throw new System.NotImplementedException();
+            await _questionTableRepresentationsRepository.Remove(id);
         }
 
         public async Task<(int createdTagValues, int existedTagValues)> LinkTags(int questionId, string tagTitle, string[] tagValues)
