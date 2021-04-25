@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SharedKernel;
 
 namespace KnowledgeBase.Domain.UseCaseContracts.WithdrawTagsFromQuestion
 {
@@ -8,4 +9,11 @@ namespace KnowledgeBase.Domain.UseCaseContracts.WithdrawTagsFromQuestion
         public string TagTitle { get; set; }
         public List<string> TagValues { get; set; }
     }
+
+    public class Response
+    {
+        public int WithdrawnLinkedTagsCount { get; set; }
+    }
+
+    public interface WithdrawTagsFromQuestionUseCaseHandler : UseCaseHandler<Request, Response> { }
 }

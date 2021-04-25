@@ -1,8 +1,5 @@
-using System.Linq;
 using AutoMapper;
-using KnowledgeBase.Domain;
 using KnowledgeBase.WebAPI.Models;
-
 using AddQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.AddQuestion;
 using ObtainQuestionByIdentifierUseCase = KnowledgeBase.Domain.UseCaseContracts.ObtainQuestionByIdentifier;
 

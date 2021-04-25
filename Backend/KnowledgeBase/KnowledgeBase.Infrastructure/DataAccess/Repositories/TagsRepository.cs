@@ -4,7 +4,7 @@ using KnowledgeBase.Domain;
 
 namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
 {
-    internal class TagsRepository : ITagsRepository
+    public class TagsRepository : ITagsRepository
     {
         private readonly KnowledgeBaseContext _context;
 

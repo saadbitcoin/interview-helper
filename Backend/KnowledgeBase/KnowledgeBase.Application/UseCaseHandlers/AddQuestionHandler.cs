@@ -6,7 +6,7 @@ using KnowledgeBase.Domain;
 
 namespace KnowledgeBase.Application.UseCaseHandlers
 {
-    public class AddQuestionHandler : UseCaseHandler<Request, Response>
+    public class AddQuestionHandler : AddQuestionUseCaseHandler
     {
         private readonly IQuestionsRepository _questionsRepository;
         private readonly ITagsRepository _tagsRepository;

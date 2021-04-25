@@ -4,7 +4,7 @@ using KnowledgeBase.Infrastructure.DataAccess.Models;
 
 namespace KnowledgeBase.Infrastructure.DataAccess.InternalRepositories
 {
-    internal class QuestionTableRepresentationsRepository
+    public class QuestionTableRepresentationsRepository
     {
         private readonly KnowledgeBaseContext _context;
 

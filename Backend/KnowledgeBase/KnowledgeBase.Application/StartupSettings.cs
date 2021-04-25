@@ -8,7 +8,7 @@ namespace KnowledgeBase.Application
         public static void AddUseCaseHandlers(this IServiceCollection services)
         {
             services.AddTransient<AddQuestionHandler>();
-            services.AddTransient<GetQuestionsByLinkedTagsHandler>();
+            services.AddTransient<ObtainQuestionsByLinkedTagsHandler>();
             services.AddTransient<ObtainQuestionByIdentifierHandler>();
         }
     }

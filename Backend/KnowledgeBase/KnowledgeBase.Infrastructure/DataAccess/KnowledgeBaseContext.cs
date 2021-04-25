@@ -1,11 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using KnowledgeBase.Domain;
 using KnowledgeBase.Infrastructure.DataAccess.Models;
-using System;
 
 namespace KnowledgeBase.Infrastructure.DataAccess
 {
-    internal class KnowledgeBaseContext : DbContext
+    public class KnowledgeBaseContext : DbContext
     {
         public KnowledgeBaseContext(DbContextOptions<KnowledgeBaseContext> options) : base(options)
         {

@@ -4,7 +4,7 @@ using KnowledgeBase.Infrastructure.DataAccess.Models;
 
 namespace KnowledgeBase.Infrastructure.DataAccess.InternalRepositories
 {
-    internal class TagTableRepresentationsRepository
+    public class TagTableRepresentationsRepository
     {
         private readonly KnowledgeBaseContext _context;
 

@@ -4,7 +4,7 @@ using KnowledgeBase.Infrastructure.DataAccess.Models;
 
 namespace KnowledgeBase.Infrastructure.DataAccess.InternalRepositories
 {
-    internal class QuestionLinkedTagsRepository
+    public class QuestionLinkedTagsRepository
     {
         private readonly KnowledgeBaseContext _context;
 

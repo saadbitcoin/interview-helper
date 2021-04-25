@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using KnowledgeBase.Infrastructure;
-using KnowledgeBase.Application.UseCaseHandlers;
 using AutoMapper;
 using KnowledgeBase.Application;
 

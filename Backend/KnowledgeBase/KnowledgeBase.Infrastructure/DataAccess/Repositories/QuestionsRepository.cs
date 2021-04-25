@@ -8,13 +8,12 @@ using KnowledgeBase.Infrastructure.DataAccess.Models;
 
 namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
 {
-    internal class QuestionsRepository : IQuestionsRepository
+    public class QuestionsRepository : IQuestionsRepository
     {
         private readonly QuestionTableRepresentationsRepository _questionTableRepresentationsRepository;
         private readonly QuestionLinkedTagsRepository _questionLinkedTagsRepository;
         private readonly LinkedTagsRepository _linkedTagsRepository;
         private readonly TagTableRepresentationsRepository _tagTableRepresentationsRepository;
-
 
         public QuestionsRepository(QuestionTableRepresentationsRepository questionTableRepresentationsRepository,
             QuestionLinkedTagsRepository questionLinkedTagsRepository, LinkedTagsRepository linkedTagsRepository,

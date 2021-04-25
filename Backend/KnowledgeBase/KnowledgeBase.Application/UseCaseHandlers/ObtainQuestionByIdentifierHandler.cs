@@ -1,11 +1,10 @@
-using SharedKernel;
 using KnowledgeBase.Domain.UseCaseContracts.ObtainQuestionByIdentifier;
 using System.Threading.Tasks;
 using KnowledgeBase.Application.Repositories;
 
 namespace KnowledgeBase.Application.UseCaseHandlers
 {
-    public class ObtainQuestionByIdentifierHandler : UseCaseHandler<Request, Response>
+    public class ObtainQuestionByIdentifierHandler : ObtainQuestionByIdentifierUseCaseHandler
     {
         private readonly IQuestionsRepository _questionsRepository;
 
