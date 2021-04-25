@@ -13,6 +13,8 @@ namespace KnowledgeBase.Application
             services.AddTransient<ObtainQuestionsByLinkedTagsHandler>();
             services.AddTransient<ObtainQuestionByIdentifierHandler>();
             services.AddTransient<WithdrawTagsFromQuestionHandler>();
+
+            services.AddTransient<GetAllTagBasicInfoHandler>();
         }
     }
 }

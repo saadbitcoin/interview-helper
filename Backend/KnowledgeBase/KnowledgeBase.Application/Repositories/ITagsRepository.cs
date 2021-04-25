@@ -6,7 +6,7 @@ namespace KnowledgeBase.Application.Repositories
     public interface ITagsRepository
     {
         Task<int> AddNewTag(string name);
-        Task<string[]> GetAllTagNames();
+        Task<(int tagId, string tagName)[]> GetAllTagBasicInfo();
         Task<Tag> GetTagById(int id);
         Task<Tag> GetTagByName(string name);
         Task AddNewTagValues(int tagId, string[] values);

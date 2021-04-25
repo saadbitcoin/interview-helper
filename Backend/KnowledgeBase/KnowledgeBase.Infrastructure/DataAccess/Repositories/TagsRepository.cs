@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using KnowledgeBase.Application.Repositories;
 using KnowledgeBase.Domain;
@@ -23,9 +25,9 @@ namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
             throw new System.NotImplementedException();
         }
 
-        public Task<string[]> GetAllTagNames()
+        public Task<(int tagId, string tagName)[]> GetAllTagBasicInfo()
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(_context.Tags.AsEnumerable().Select(x => (tagId: x.Id, tagName: x.Name)).ToArray());
         }
 
         public Task<Tag> GetTagById(int id)
