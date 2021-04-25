@@ -64,7 +64,7 @@ namespace KnowledgeBase.WebAPI.Controllers
             return Ok(accordingQuestions);
         }
 
-        [HttpPatch("{id}/linkTag")]
+        [HttpPatch("{questionId}/linkTag")]
         public async Task<ActionResult<LinkTagsResultDTO>> LinkTagToQuestion([FromRoute] int questionId, [FromBody] LinkTagsDTO model)
         {
             var handlerRequest = new LinkNewTagToQuestionUseCase.Request
