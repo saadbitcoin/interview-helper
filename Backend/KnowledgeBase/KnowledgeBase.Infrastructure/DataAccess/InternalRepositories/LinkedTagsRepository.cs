@@ -23,6 +23,11 @@ namespace KnowledgeBase.Infrastructure.DataAccess.InternalRepositories
             return _context.LinkedTags.FirstOrDefault(x => x.TagId == tagId && x.Value == value);
         }
 
+        public LinkedTag[] GetByTagId(int tagId)
+        {
+            return _context.LinkedTags.Where(x => x.TagId == tagId).ToArray();
+        }
+
         public async Task<int> Add(LinkedTag target)
         {
             _context.LinkedTags.Add(target);

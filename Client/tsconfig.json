@@ -13,7 +13,9 @@
         "sourceMap": true,
         "paths": {
             "Components": ["Components/index.ts"],
-            "Models": ["Models/index.ts"]
+            "Models": ["Models/index.ts"],
+            "Hooks": ["Hooks/index.ts"],
+            "APIClients": ["APIClients/index.ts"]
         }
     },
     "include": ["./Sources"]

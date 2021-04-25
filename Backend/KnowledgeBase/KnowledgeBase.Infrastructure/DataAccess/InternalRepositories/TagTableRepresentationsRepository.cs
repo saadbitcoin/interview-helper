@@ -30,5 +30,15 @@ namespace KnowledgeBase.Infrastructure.DataAccess.InternalRepositories
         {
             return _context.Tags.FirstOrDefault(x => x.Name == name);
         }
+
+        public TagTableRepresentation GetById(int id)
+        {
+            return _context.Tags.FirstOrDefault(x => x.Id == id);
+        }
+
+        public TagTableRepresentation[] GetAll()
+        {
+            return _context.Tags.ToArray();
+        }
     }
 }
