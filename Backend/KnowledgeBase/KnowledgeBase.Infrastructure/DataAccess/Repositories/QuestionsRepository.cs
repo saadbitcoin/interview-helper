@@ -107,7 +107,7 @@ namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
             var questionIds = linkedTags.SelectMany(x => _questionLinkedTagsRepository.GetByLinkedTag(x)).Select(x => x.QuestionId);
             var getQuestionTasks = questionIds.Select(x => GetQuestion(x));
 
-            return Task.FromResult(getQuestionTasks.Select(x => x.Result).ToArray());
+            return Task.FromResult(getQuestionTasks.Select(x => x.Result).Where(x => x != null).ToArray());
         }
 
         public Task RemoveQuestion(int id)
