@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 using KnowledgeBase.Domain.UseCaseContracts.ObtainQuestionsByLinkedTags;
 using KnowledgeBase.Application.Repositories;
+using System.Collections.Generic;
+using KnowledgeBase.Domain;
 
 namespace KnowledgeBase.Application.UseCaseHandlers
 {
@@ -13,9 +15,14 @@ namespace KnowledgeBase.Application.UseCaseHandlers
             _questionsRepository = questionsRepository;
         }
 
-        public Task<Response> Handle(Request requestData)
+        public async Task<Response> Handle(Request requestData)
         {
-            throw new System.NotImplementedException();
+            var accordedQuestions = await _questionsRepository.GetQuestions(
+                requestData.TagName,
+                requestData.Values
+            );
+
+            return new Response { Result = accordedQuestions };
         }
     }
 }

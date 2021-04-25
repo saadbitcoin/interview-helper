@@ -1,11 +1,11 @@
-using System.Collections.Generic;
 using SharedKernel;
 
 namespace KnowledgeBase.Domain.UseCaseContracts.ObtainQuestionsByLinkedTags
 {
     public class Request
     {
-        public Dictionary<string, string[]> Source { get; set; }
+        public string TagName { get; set; }
+        public string[] Values { get; set; }
     }
 
     public class Response
