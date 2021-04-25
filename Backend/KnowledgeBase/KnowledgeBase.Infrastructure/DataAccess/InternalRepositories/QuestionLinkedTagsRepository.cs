@@ -30,5 +30,17 @@ namespace KnowledgeBase.Infrastructure.DataAccess.InternalRepositories
         {
             return _context.QuestionLinkedTags.Where(x => x.LinkedTagId == source.Id).ToArray();
         }
+
+
+        public async Task<int> RemoveByQuestionIdAndLinkedTagId(int questionId, int linkedTagId)
+        {
+            var requiredRecords = _context.QuestionLinkedTags.Where(x => x.QuestionId == questionId && x.LinkedTagId == linkedTagId);
+            var count = requiredRecords.Count();
+            _context.QuestionLinkedTags.RemoveRange(requiredRecords);
+            await _context.SaveChangesAsync();
+
+            return count;
+
+        }
     }
 }

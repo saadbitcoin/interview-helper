@@ -115,14 +115,70 @@ namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
             throw new System.NotImplementedException();
         }
 
-        public Task<(int createdTags, int existedTags)> LinkTags(int questionId, string tagTitle, string[] tagValues)
+        public async Task<(int createdTagValues, int existedTagValues)> LinkTags(int questionId, string tagTitle, string[] tagValues)
         {
-            throw new System.NotImplementedException();
+            var createdTagValues = 0;
+            var existedTagValues = 0;
+
+            var tag = _tagTableRepresentationsRepository.GetByName(tagTitle);
+
+            if (tag == null)
+            {
+                tag = new TagTableRepresentation { Name = tagTitle };
+                await _tagTableRepresentationsRepository.Add(tag);
+            }
+
+            foreach (var tagValue in tagValues)
+            {
+                var newTagValue = false;
+                var linkedTag = _linkedTagsRepository.GetByTagIdAndValue(tag.Id, tagValue);
+
+                if (linkedTag == null)
+                {
+                    newTagValue = true;
+                    linkedTag = new LinkedTag { TagId = tag.Id, Value = tagValue };
+                    await _linkedTagsRepository.Add(linkedTag);
+                }
+
+                var associatedQuestionLinkedTags = _questionLinkedTagsRepository.GetByLinkedTag(linkedTag);
+                if (!associatedQuestionLinkedTags.Any(x => x.QuestionId == questionId))
+                {
+                    await _questionLinkedTagsRepository.Add(new QuestionLinkedTag { LinkedTagId = linkedTag.Id, QuestionId = questionId });
+                }
+
+                if (!newTagValue)
+                {
+                    existedTagValues++;
+                    continue;
+                }
+
+                createdTagValues++;
+            }
+
+            return (createdTagValues, existedTagValues);
         }
 
-        public Task<int> WithdrawTags(int questionId, string tagTitle, string[] tagValues)
+        public async Task<int> WithdrawTags(int questionId, string tagTitle, string[] tagValues)
         {
-            throw new System.NotImplementedException();
+            var tag = _tagTableRepresentationsRepository.GetByName(tagTitle);
+
+            if (tag == null)
+            {
+                return 0;
+            }
+
+            var withdrawnTagsCount = 0;
+            var associatedLinkedTags = tagValues.Select(x => _linkedTagsRepository.GetByTagIdAndValue(tag.Id, x));
+
+            foreach (var linkedTag in associatedLinkedTags)
+            {
+                withdrawnTagsCount += await _questionLinkedTagsRepository.RemoveByQuestionIdAndLinkedTagId(
+                    questionId,
+                    linkedTag.Id
+                );
+            }
+
+            return withdrawnTagsCount;
         }
     }
 }

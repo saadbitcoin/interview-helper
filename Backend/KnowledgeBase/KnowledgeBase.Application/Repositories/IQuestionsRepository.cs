@@ -10,7 +10,7 @@ namespace KnowledgeBase.Application.Repositories
         Task<Question[]> GetQuestions(string tagTitle, string[] tagValues);
         Task<int> AddQuestion(Question target);
         Task RemoveQuestion(int id);
-        Task<(int createdTags, int existedTags)> LinkTags(int questionId, string tagTitle, string[] tagValues);
+        Task<(int createdTagValues, int existedTagValues)> LinkTags(int questionId, string tagTitle, string[] tagValues);
         Task<int> WithdrawTags(int questionId, string tagTitle, string[] tagValues);
     }
 }

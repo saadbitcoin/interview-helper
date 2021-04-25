@@ -21,7 +21,7 @@ namespace KnowledgeBase.Application.UseCaseHandlers
                 requestData.TagValues.ToArray()
             );
 
-            return new Response { CreatedTagsCount = result.createdTags, ExistedTagsCount = result.existedTags };
+            return new Response { CreatedTagsCount = result.createdTagValues, ExistedTagsCount = result.existedTagValues };
         }
     }
 }
