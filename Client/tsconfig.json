@@ -12,7 +12,8 @@
         "baseUrl": "Sources",
         "sourceMap": true,
         "paths": {
-            "Components": ["Components/index.ts"]
+            "Components": ["Components/index.ts"],
+            "Models": ["Models/index.ts"]
         }
     },
     "include": ["./Sources"]
