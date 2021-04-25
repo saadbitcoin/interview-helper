@@ -108,5 +108,15 @@ namespace KnowledgeBase.Infrastructure.DataAccess.Repositories
         {
             throw new System.NotImplementedException();
         }
+
+        public Task<(int createdTags, int existedTags)> LinkTags(int questionId, string tagTitle, string[] tagValues)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<int> WithdrawTags(int questionId, string tagTitle, string[] tagValues)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

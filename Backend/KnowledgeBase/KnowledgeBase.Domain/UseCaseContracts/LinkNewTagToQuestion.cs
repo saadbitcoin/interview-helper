@@ -12,7 +12,9 @@ namespace KnowledgeBase.Domain.UseCaseContracts.LinkNewTagToQuestion
 
     public class Response
     {
-        public int AddedLinkedTagsCount { get; set; }
+        public int CreatedTagsCount { get; set; }
+        public int ExistedTagsCount { get; set; }
+        public int TotalLinkedTagsCount => CreatedTagsCount + ExistedTagsCount;
     }
 
     public interface LinkNewTagToQuestionUseCaseHandler : UseCaseHandler<Request, Response> { }
