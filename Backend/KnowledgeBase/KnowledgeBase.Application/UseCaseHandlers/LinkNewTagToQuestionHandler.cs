@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using KnowledgeBase.Application.Repositories;
-using KnowledgeBase.Domain.UseCaseContracts.LinkNewTagToQuestion;
+using KnowledgeBase.Domain.UseCaseContracts.LinkNewTagsToQuestion;
 
 namespace KnowledgeBase.Application.UseCaseHandlers
 {
-    public class LinkNewTagToQuestionHandler : LinkNewTagToQuestionUseCaseHandler
+    public class LinkNewTagToQuestionHandler : LinkNewTagsToQuestionUseCaseHandler
     {
         private readonly IQuestionsRepository _questionsRepository;
 

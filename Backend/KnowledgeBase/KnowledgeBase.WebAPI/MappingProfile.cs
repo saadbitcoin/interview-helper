@@ -2,8 +2,8 @@ using AutoMapper;
 using KnowledgeBase.WebAPI.Models;
 using AddQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.AddQuestion;
 using ObtainQuestionByIdentifierUseCase = KnowledgeBase.Domain.UseCaseContracts.ObtainQuestionByIdentifier;
-using LinkNewTagToQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.LinkNewTagToQuestion;
-
+using LinkNewTagsToQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.LinkNewTagsToQuestion;
+using WithdrawTagsFromQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.WithdrawTagsFromQuestion;
 namespace KnowledgeBase.WebAPI
 {
     public class MappingProfile : Profile
@@ -36,10 +36,16 @@ namespace KnowledgeBase.WebAPI
                     x => x.MapFrom(source => source)
                 );
 
-            CreateMap<LinkNewTagToQuestionUseCase.Response, LinkTagsResultDTO>()
+            CreateMap<LinkNewTagsToQuestionUseCase.Response, LinkTagsResultDTO>()
                 .ForMember(
                     destination => destination.LinkedTagsCount,
                     x => x.MapFrom(source => source.TotalLinkedTagsCount)
+                );
+
+            CreateMap<WithdrawTagsFromQuestionUseCase.Response, WithdrawTagsResultDTO>()
+                .ForMember(
+                    destination => destination.WithdrawnTagsCount,
+                    x => x.MapFrom(source => source.WithdrawnLinkedTagsCount)
                 );
         }
     }

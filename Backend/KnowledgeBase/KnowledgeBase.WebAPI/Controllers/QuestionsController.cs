@@ -8,7 +8,8 @@ using KnowledgeBase.WebAPI.Models;
 using AddQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.AddQuestion;
 using ObtainQuestionByIdentifierUseCase = KnowledgeBase.Domain.UseCaseContracts.ObtainQuestionByIdentifier;
 using ObtainQuestionsByLinkedTagsUseCase = KnowledgeBase.Domain.UseCaseContracts.ObtainQuestionsByLinkedTags;
-using LinkNewTagToQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.LinkNewTagToQuestion;
+using LinkNewTagsToQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.LinkNewTagsToQuestion;
+using WithdrawTagsFromQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.WithdrawTagsFromQuestion;
 
 namespace KnowledgeBase.WebAPI.Controllers
 {
@@ -21,17 +22,20 @@ namespace KnowledgeBase.WebAPI.Controllers
         private readonly ObtainQuestionByIdentifierHandler _obtainQuestionByIdentifierHandler;
         private readonly ObtainQuestionsByLinkedTagsHandler _obtainQuestionsByLinkedTagsHandler;
         private readonly LinkNewTagToQuestionHandler _linkNewTagToQuestionHandler;
+        private readonly WithdrawTagsFromQuestionHandler _withdrawTagsFromQuestionHandler;
 
         public QuestionsController(IMapper mapper, AddQuestionHandler addQuestionHandler,
             ObtainQuestionByIdentifierHandler obtainQuestionByIdentifierHandler,
             ObtainQuestionsByLinkedTagsHandler obtainQuestionsByLinkedTagsHandler,
-            LinkNewTagToQuestionHandler linkNewTagToQuestionHandler)
+            LinkNewTagToQuestionHandler linkNewTagToQuestionHandler,
+            WithdrawTagsFromQuestionHandler withdrawTagsFromQuestionHandler)
         {
             _mapper = mapper;
             _addQuestionHandler = addQuestionHandler;
             _obtainQuestionByIdentifierHandler = obtainQuestionByIdentifierHandler;
             _obtainQuestionsByLinkedTagsHandler = obtainQuestionsByLinkedTagsHandler;
             _linkNewTagToQuestionHandler = linkNewTagToQuestionHandler;
+            _withdrawTagsFromQuestionHandler = withdrawTagsFromQuestionHandler;
         }
 
         [HttpPost]
@@ -67,7 +71,7 @@ namespace KnowledgeBase.WebAPI.Controllers
         [HttpPatch("{questionId}/linkTag")]
         public async Task<ActionResult<LinkTagsResultDTO>> LinkTagToQuestion([FromRoute] int questionId, [FromBody] LinkTagsDTO model)
         {
-            var handlerRequest = new LinkNewTagToQuestionUseCase.Request
+            var handlerRequest = new LinkNewTagsToQuestionUseCase.Request
             {
                 QuestionId = questionId,
                 TagTitle = model.TagName,
@@ -76,6 +80,22 @@ namespace KnowledgeBase.WebAPI.Controllers
 
             var handlerResponse = await _linkNewTagToQuestionHandler.Handle(handlerRequest);
             var resultDTO = _mapper.Map<LinkTagsResultDTO>(handlerResponse);
+
+            return Ok(resultDTO);
+        }
+
+        [HttpPatch("{questionId}/withdrawTags")]
+        public async Task<ActionResult<WithdrawTagsResultDTO>> WithdrawTagsFromQuestion([FromRoute] int questionId, [FromBody] WithdrawTagsDTO model)
+        {
+            var handlerRequest = new WithdrawTagsFromQuestionUseCase.Request
+            {
+                QuestionId = questionId,
+                TagTitle = model.TagName,
+                TagValues = model.TagValues.ToList()
+            };
+
+            var handlerResponse = await _withdrawTagsFromQuestionHandler.Handle(handlerRequest);
+            var resultDTO = _mapper.Map<WithdrawTagsResultDTO>(handlerResponse);
 
             return Ok(resultDTO);
         }
