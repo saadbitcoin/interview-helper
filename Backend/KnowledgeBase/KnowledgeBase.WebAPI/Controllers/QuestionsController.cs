@@ -1,16 +1,9 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using System.Linq;
-using KnowledgeBase.Application.UseCaseHandlers;
-using KnowledgeBase.Domain;
+using AutoMapper;
 using KnowledgeBase.WebAPI.Models;
-using AddQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.AddQuestion;
-using ObtainQuestionByIdentifierUseCase = KnowledgeBase.Domain.UseCaseContracts.ObtainQuestionByIdentifier;
-using ObtainQuestionsByLinkedTagsUseCase = KnowledgeBase.Domain.UseCaseContracts.ObtainQuestionsByLinkedTags;
-using LinkNewTagsToQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.LinkNewTagsToQuestion;
-using WithdrawTagsFromQuestionUseCase = KnowledgeBase.Domain.UseCaseContracts.WithdrawTagsFromQuestion;
-
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using UseCases = KnowledgeBase.Domain.UseCases;
 namespace KnowledgeBase.WebAPI.Controllers
 {
     [ApiController]
@@ -18,85 +11,55 @@ namespace KnowledgeBase.WebAPI.Controllers
     public class QuestionsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly AddQuestionHandler _addQuestionHandler;
-        private readonly ObtainQuestionByIdentifierHandler _obtainQuestionByIdentifierHandler;
-        private readonly ObtainQuestionsByLinkedTagsHandler _obtainQuestionsByLinkedTagsHandler;
-        private readonly LinkNewTagToQuestionHandler _linkNewTagToQuestionHandler;
-        private readonly WithdrawTagsFromQuestionHandler _withdrawTagsFromQuestionHandler;
+        private readonly UseCases.CreateLinkedQuestionFromScratch.IHandler _createLinkedQuestionFromScratch;
+        private readonly UseCases.GetTaggedQuestionsByTagIds.IHandler _getTaggedQuestionsByTagIds;
 
-        public QuestionsController(IMapper mapper, AddQuestionHandler addQuestionHandler,
-            ObtainQuestionByIdentifierHandler obtainQuestionByIdentifierHandler,
-            ObtainQuestionsByLinkedTagsHandler obtainQuestionsByLinkedTagsHandler,
-            LinkNewTagToQuestionHandler linkNewTagToQuestionHandler,
-            WithdrawTagsFromQuestionHandler withdrawTagsFromQuestionHandler)
+        public QuestionsController(IMapper mapper,
+            UseCases.GetTaggedQuestionByQuestionId.IHandler getTaggedQuestionByQuestionId,
+            UseCases.CreateLinkedQuestionFromScratch.IHandler createLinkedQuestionFromScratch,
+            UseCases.GetTaggedQuestionsByTagIds.IHandler getTaggedQuestionsByTagIds)
         {
             _mapper = mapper;
-            _addQuestionHandler = addQuestionHandler;
-            _obtainQuestionByIdentifierHandler = obtainQuestionByIdentifierHandler;
-            _obtainQuestionsByLinkedTagsHandler = obtainQuestionsByLinkedTagsHandler;
-            _linkNewTagToQuestionHandler = linkNewTagToQuestionHandler;
-            _withdrawTagsFromQuestionHandler = withdrawTagsFromQuestionHandler;
+            _createLinkedQuestionFromScratch = createLinkedQuestionFromScratch;
+            _getTaggedQuestionsByTagIds = getTaggedQuestionsByTagIds;
         }
 
         [HttpPost]
-        public async Task<ActionResult<AddQuestionResultDTO>> AddQuestion([FromBody] AddQuestionDTO model)
+        public async Task<ActionResult<CreateQuestionResultDTO>> Create([FromBody] CreateQuestionDTO model)
         {
-            var handlerRequest = _mapper.Map<AddQuestionUseCase.Request>(model);
-            var handlerResponse = await _addQuestionHandler.Handle(handlerRequest);
-            var resultDTO = _mapper.Map<AddQuestionResultDTO>(handlerResponse);
-
+            var request = _mapper.Map<UseCases.CreateLinkedQuestionFromScratch.Request>(model);
+            var response = await _createLinkedQuestionFromScratch.Handle(request);
+            if (!response.Success)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            var resultDTO = _mapper.Map<CreateQuestionResultDTO>(response);
             return Ok(resultDTO);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Question>> GetQuestion([FromRoute] int id)
+        [HttpGet("byTagsIntersection")]
+        public async Task<ActionResult<GetQuestionsDTO>> GetByTagsIntersection([FromQuery] int[] tagIds)
         {
-            var handlerRequest = _mapper.Map<ObtainQuestionByIdentifierUseCase.Request>(id);
-            var handlerResponse = await _obtainQuestionByIdentifierHandler.Handle(handlerRequest);
-            var question = handlerResponse.Result;
-
-            return Ok(question);
-        }
-
-        [HttpGet("byLinkedTags/{tag}")]
-        public async Task<ActionResult<Question[]>> GetQuestionsByLinkedTag([FromRoute] string tag, [FromHeader(Name = "x-tag-values")] string[] tagValues)
-        {
-            var handlerRequest = new ObtainQuestionsByLinkedTagsUseCase.Request { TagName = tag, Values = tagValues };
-            var handlerResponse = await _obtainQuestionsByLinkedTagsHandler.Handle(handlerRequest);
-            var accordingQuestions = handlerResponse.Result;
-
-            return Ok(accordingQuestions);
-        }
-
-        [HttpPatch("{questionId}/linkTag")]
-        public async Task<ActionResult<LinkTagsResultDTO>> LinkTagToQuestion([FromRoute] int questionId, [FromBody] LinkTagsDTO model)
-        {
-            var handlerRequest = new LinkNewTagsToQuestionUseCase.Request
+            var request = new UseCases.GetTaggedQuestionsByTagIds.Request
             {
-                QuestionId = questionId,
-                TagTitle = model.TagName,
-                TagValues = model.TagValues.ToList()
+                Identifiers = tagIds,
+                Mode = UseCases.GetTaggedQuestionsByTagIds.Modes.Intersection
             };
-
-            var handlerResponse = await _linkNewTagToQuestionHandler.Handle(handlerRequest);
-            var resultDTO = _mapper.Map<LinkTagsResultDTO>(handlerResponse);
-
+            var response = await _getTaggedQuestionsByTagIds.Handle(request);
+            var resultDTO = _mapper.Map<GetQuestionsDTO>(response);
             return Ok(resultDTO);
         }
 
-        [HttpPatch("{questionId}/withdrawTags")]
-        public async Task<ActionResult<WithdrawTagsResultDTO>> WithdrawTagsFromQuestion([FromRoute] int questionId, [FromBody] WithdrawTagsDTO model)
+        [HttpGet("byTagsUnion")]
+        public async Task<ActionResult<GetQuestionsDTO>> GetByTagsUnion([FromQuery] int[] tagIds)
         {
-            var handlerRequest = new WithdrawTagsFromQuestionUseCase.Request
+            var request = new UseCases.GetTaggedQuestionsByTagIds.Request
             {
-                QuestionId = questionId,
-                TagTitle = model.TagName,
-                TagValues = model.TagValues.ToList()
+                Identifiers = tagIds,
+                Mode = UseCases.GetTaggedQuestionsByTagIds.Modes.Union
             };
-
-            var handlerResponse = await _withdrawTagsFromQuestionHandler.Handle(handlerRequest);
-            var resultDTO = _mapper.Map<WithdrawTagsResultDTO>(handlerResponse);
-
+            var response = await _getTaggedQuestionsByTagIds.Handle(request);
+            var resultDTO = _mapper.Map<GetQuestionsDTO>(response);
             return Ok(resultDTO);
         }
     }

@@ -1,26 +1,26 @@
 using System.Threading.Tasks;
 using KnowledgeBase.Application.Services;
-using UseCase = KnowledgeBase.Domain.UseCases.WithdrawTagsFromQuestion;
+using UseCase = KnowledgeBase.Domain.UseCases.LinkTagsToQuestion;
 
 namespace KnowledgeBase.Application.UseCaseHandlers
 {
-    public class WithdrawTagsFromQuestionHandler : UseCase.IHandler
+    public class LinkTagsToQuestionHandler : UseCase.IHandler
     {
         private readonly IQuestionTagRelationshipManager _questionTagRelationshipManager;
 
-        public WithdrawTagsFromQuestionHandler(IQuestionTagRelationshipManager questionTagRelationshipManager)
+        public LinkTagsToQuestionHandler(IQuestionTagRelationshipManager questionTagRelationshipManager)
         {
             _questionTagRelationshipManager = questionTagRelationshipManager;
         }
 
         public async Task<UseCase.Response> Handle(UseCase.Request requestData)
         {
-            var withdrawnTagsCount = await _questionTagRelationshipManager.WithdrawTagsFromQuestion(
+            var linkedTagsCount = await _questionTagRelationshipManager.LinkTagsToQuestion(
                 requestData.QuestionId,
                 requestData.TagIds
             );
 
-            return new UseCase.Response { WithdrawnTagsCount = withdrawnTagsCount };
+            return new UseCase.Response { LinkedTagsCount = linkedTagsCount };
         }
     }
 }

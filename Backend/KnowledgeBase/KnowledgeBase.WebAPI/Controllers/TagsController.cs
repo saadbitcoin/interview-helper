@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
-using KnowledgeBase.Application.UseCaseHandlers;
-using KnowledgeBase.Domain;
+using AutoMapper;
 using KnowledgeBase.WebAPI.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using GetAllTagBasicInfoUseCase = KnowledgeBase.Domain.UseCaseContracts.GetAllTagBasicInfo;
-using GetTagByIdentifier = KnowledgeBase.Domain.UseCaseContracts.GetTagByIdentifier;
+using Operations = KnowledgeBase.Domain.Operations;
 
 namespace KnowledgeBase.WebAPI.Controllers
 {
@@ -12,30 +11,36 @@ namespace KnowledgeBase.WebAPI.Controllers
     [Route("[controller]")]
     public class TagsController : ControllerBase
     {
-        private readonly GetAllTagBasicInfoHandler _getAllTagBasicInfoHandler;
-        private readonly GetTagByIdentifierHandler _getTagByIdentifierHandler;
+        private IMapper _mapper;
+        private readonly Operations.Tags.Create.IHandler _createTagHandler;
+        private readonly Operations.Tags.GetAll.IHandler _getAllTagsHandler;
 
-        public TagsController(GetAllTagBasicInfoHandler getAllTagBasicInfoHandler,
-            GetTagByIdentifierHandler getTagByIdentifierHandler)
+        public TagsController(IMapper mapper, Operations.Tags.Create.IHandler createTagHandler,
+            Operations.Tags.GetAll.IHandler getAllTagsHandler)
         {
-            _getAllTagBasicInfoHandler = getAllTagBasicInfoHandler;
-            _getTagByIdentifierHandler = getTagByIdentifierHandler;
+            _mapper = mapper;
+            _createTagHandler = createTagHandler;
+            _getAllTagsHandler = getAllTagsHandler;
         }
 
-        [HttpGet("basicInfo")]
-        public async Task<ActionResult<GetAllTagBasicInfoUseCase.BasicTagInfo[]>> GetAllTagsBasicInfo()
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] CreateTagDTO model)
         {
-            var handlerResponse = await _getAllTagBasicInfoHandler.Handle(new GetAllTagBasicInfoUseCase.Request());
-
-            return Ok(handlerResponse.Items);
+            var request = _mapper.Map<Operations.Tags.Create.Request>(model);
+            var response = await _createTagHandler.Handle(request);
+            if (!response.Success)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GetTagByIdDTO>> GetTag([FromRoute] int id)
+        [HttpGet("all")]
+        public async Task<ActionResult<GetTagsDTO>> GetAll()
         {
-            var handlerResponse = await _getTagByIdentifierHandler.Handle(new GetTagByIdentifier.Request { TagId = id });
-
-            return Ok(new GetTagByIdDTO { Data = handlerResponse.RequiredTag });
+            var request = new Operations.Tags.GetAll.Request { };
+            var response = await _getAllTagsHandler.Handle(request);
+            return Ok(response);
         }
     }
 }

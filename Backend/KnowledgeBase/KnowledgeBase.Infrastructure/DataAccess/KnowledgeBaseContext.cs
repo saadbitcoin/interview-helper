@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using KnowledgeBase.Infrastructure.DataAccess.Models;
+using KnowledgeBase.Domain.Entities.Base;
 
 namespace KnowledgeBase.Infrastructure.DataAccess
 {
@@ -10,9 +11,8 @@ namespace KnowledgeBase.Infrastructure.DataAccess
             Database.EnsureCreated();
         }
 
-        public DbSet<TagTableRepresentation> Tags { get; set; }
-        public DbSet<LinkedTag> LinkedTags { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<QuestionLinkedTag> QuestionLinkedTags { get; set; }
-        public DbSet<QuestionTableRepresentation> Questions { get; set; }
+        public DbSet<Question> Questions { get; set; }
     }
 }

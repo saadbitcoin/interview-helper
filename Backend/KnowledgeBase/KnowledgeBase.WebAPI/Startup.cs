@@ -25,10 +25,11 @@ namespace KnowledgeBase.WebAPI
             services.AddControllers();
             services.AddSwaggerGen();
 
-            services.AddUseCaseHandlers();
 
-            var postgresConnectionString = Configuration.GetConnectionString("Postgres");
-            services.AddDataAccessLayer(postgresConnectionString);
+            services.InjectPostgreSQLDatabase(Configuration.GetConnectionString("Postgres"));
+            services.InjectBaseEntitiesOperations();
+            services.InjectApplicationServices();
+            services.AddUseCaseHandlers();
 
             IMapper mapper = new MapperConfiguration(x => { x.AddProfile(new MappingProfile()); }).CreateMapper();
             services.AddSingleton(mapper);
