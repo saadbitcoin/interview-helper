@@ -1,16 +1,11 @@
-import { Tag, TagBasicInfo } from "Models";
+import { Tag } from "Models";
 
 class KnowledgeBaseTagsAPIClient {
     public constructor(private endpoint: string) {}
 
-    public async getAllBasicInfo() {
-        const request = await fetch(`${this.endpoint}/Tags/basicInfo`);
-        return request.json() as Promise<Array<TagBasicInfo>>;
-    }
-
-    public async getById(id: number) {
-        const request = await fetch(`${this.endpoint}/Tags/${id}`);
-        return request.json() as Promise<{ data: Tag }>;
+    public async getAll() {
+        const request = await fetch(`${this.endpoint}/Tags/all`);
+        return request.json() as Promise<Array<Tag>>;
     }
 }
 
