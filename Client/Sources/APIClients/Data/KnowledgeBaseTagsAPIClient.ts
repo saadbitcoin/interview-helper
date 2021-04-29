@@ -5,7 +5,7 @@ class KnowledgeBaseTagsAPIClient {
 
     public async getAll() {
         const request = await fetch(`${this.endpoint}/Tags/all`);
-        return request.json() as Promise<Array<Tag>>;
+        return request.json() as Promise<{ tags: Array<Tag> }>;
     }
 }
 

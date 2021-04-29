@@ -15,7 +15,8 @@
             "Components": ["Components/index.ts"],
             "Models": ["Models/index.ts"],
             "Hooks": ["Hooks/index.ts"],
-            "APIClients": ["APIClients/index.ts"]
+            "APIClients": ["APIClients/index.ts"],
+            "State": ["state.ts"]
         }
     },
     "include": ["./Sources"]
