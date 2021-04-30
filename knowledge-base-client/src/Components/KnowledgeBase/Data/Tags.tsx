@@ -1,7 +1,7 @@
 import { useTags } from "../../../Hooks";
 import { Tag } from "../../../Models";
 import React from "react";
-import { Controls, Signals, Containers, Labels } from "../../../Views";
+import { Controls, Signals, Containers } from "../../../Views";
 
 interface Props {
     isSelected: (tag: Tag) => boolean;
