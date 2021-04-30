@@ -19,6 +19,11 @@ export const QuestionRequestButtons: React.FC<Props> = ({
     startLoadingQuestions,
 }) => {
     const [isOpenedCreationModal, setIsOpenedCreationModal] = useState(false);
+    const [newQuestionData, setNewQuestionData] = useState({
+        question: "",
+        answer: "",
+        tags: "",
+    });
 
     return (
         <>
@@ -63,18 +68,53 @@ export const QuestionRequestButtons: React.FC<Props> = ({
                 title={"Загрузка вопроса"}
             >
                 <FormControl fullWidth required>
-                    <TextField label={"Вопрос"} />
+                    <TextField
+                        label={"Вопрос"}
+                        value={newQuestionData.question}
+                        onChange={(e) =>
+                            setNewQuestionData((x) => ({
+                                ...x,
+                                question: e.target.value,
+                            }))
+                        }
+                    />
                 </FormControl>
                 <FormControl fullWidth required>
-                    <TextField label={"Ответ"} />
+                    <TextField
+                        label={"Ответ"}
+                        value={newQuestionData.answer}
+                        onChange={(e) =>
+                            setNewQuestionData((x) => ({
+                                ...x,
+                                answer: e.target.value,
+                            }))
+                        }
+                    />
                 </FormControl>
                 <FormControl fullWidth required>
-                    <TextField label={"Тэги через запятую"} />
+                    <TextField
+                        label={"Тэги через запятую"}
+                        value={newQuestionData.tags}
+                        onChange={(e) =>
+                            setNewQuestionData((x) => ({
+                                ...x,
+                                tags: e.target.value,
+                            }))
+                        }
+                    />
                 </FormControl>
                 <Box style={{ paddingTop: "1rem", paddingBottom: "1rem" }}>
                     <Button
                         disabled={false}
-                        onClick={() => {}}
+                        onClick={() => {
+                            questionsAPIClient.createNew(
+                                newQuestionData.question,
+                                newQuestionData.answer,
+                                newQuestionData.tags
+                                    .split(",")
+                                    .map((x) => x.trim())
+                            );
+                        }}
                         title={"Загрузить новый вопрос"}
                     />
                 </Box>

@@ -20,6 +20,25 @@ class QuestionsAPIClient {
         );
         return request.json() as Promise<{ questions: Array<Question> }>;
     }
+
+    public async createNew(
+        question: string,
+        answer: string,
+        tags: Array<string>
+    ) {
+        const request = await fetch(`${this.endpoint}/questions`, {
+            method: "POST",
+            body: JSON.stringify({
+                question,
+                answer,
+                accordingTags: tags,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return request.json() as Promise<any>;
+    }
 }
 
 const questionsAPIClient = new QuestionsAPIClient(
