@@ -107,13 +107,15 @@ export const QuestionRequestButtons: React.FC<Props> = ({
                     <Button
                         disabled={false}
                         onClick={() => {
-                            questionsAPIClient.createNew(
-                                newQuestionData.question,
-                                newQuestionData.answer,
-                                newQuestionData.tags
-                                    .split(",")
-                                    .map((x) => x.trim())
-                            );
+                            questionsAPIClient
+                                .createNew(
+                                    newQuestionData.question,
+                                    newQuestionData.answer,
+                                    newQuestionData.tags
+                                        .split(",")
+                                        .map((x) => x.trim())
+                                )
+                                .then((x) => setIsOpenedCreationModal(false));
                         }}
                         title={"Загрузить новый вопрос"}
                     />
