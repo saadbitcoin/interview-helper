@@ -3,7 +3,7 @@ using KnowledgeBase.Infrastructure.DataAccess.Operations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using KnowledgeBase.Application.Services;
-using KnowledgeBase.Infrastructure.DataAccess.Services;
+using KnowledgeBase.Infrastructure.Services;
 using Operations = KnowledgeBase.Domain.Operations;
 
 namespace KnowledgeBase.Infrastructure
