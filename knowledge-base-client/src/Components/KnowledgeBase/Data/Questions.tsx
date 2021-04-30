@@ -14,10 +14,12 @@ export const Questions: React.FC<Props> = ({ questions, isLoading }) => {
     }
 
     return (
-        <DefaultContainer>
-            {questions.map((x) => (
-                <QuestionCard data={x} />
-            ))}
-        </DefaultContainer>
+        <>
+            <DefaultContainer>
+                {questions.map((x) => (
+                    <QuestionCard data={x} />
+                ))}
+            </DefaultContainer>
+        </>
     );
 };

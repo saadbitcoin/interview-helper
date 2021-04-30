@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Tags } from "./Tags";
 import { DefaultContainer } from "../../../Views/Containers/Data/DefaultContainer";
 import { Header } from "../../../Views/Labels/Data/Header";
 import { useTagsSelect } from "../../../Hooks/Data/useTagsSelect";
-import { Question } from "../../../Models";
 import { QuestionRequestButtons } from "./QuestionRequestButtons";
 import { useQuestions } from "../../../Hooks";
 import { Questions } from "./Questions";
@@ -20,7 +19,7 @@ export const KnowledgeBaseApp: React.FC<Props> = () => {
     const { isSelected, selectedTagIds, toggle } = useTagsSelect();
 
     return (
-        <>
+        <div style={{ padding: "1rem" }}>
             <DefaultContainer>
                 <Header title="База знаний" />
             </DefaultContainer>
@@ -32,6 +31,6 @@ export const KnowledgeBaseApp: React.FC<Props> = () => {
                 endLoadingQuestions={endLoadingQuestions}
             />
             <Questions questions={questions} isLoading={isLoading} />
-        </>
+        </div>
     );
 };

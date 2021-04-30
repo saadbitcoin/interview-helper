@@ -1,12 +1,17 @@
+import { Typography } from "@material-ui/core";
 import React from "react";
 import { useSharedStyles } from "../../sharedStyles";
 
 interface Props {
-  title: string;
+    title: string;
 }
 
 export const Header: React.FC<Props> = ({ title }) => {
-  const { label } = useSharedStyles();
+    const { label } = useSharedStyles();
 
-  return <h1 className={label}>{title}</h1>;
+    return (
+        <Typography align={"left"} className={label} variant="h2">
+            {title}
+        </Typography>
+    );
 };

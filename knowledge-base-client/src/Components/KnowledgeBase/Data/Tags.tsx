@@ -11,12 +11,6 @@ interface Props {
 export const Tags: React.FC<Props> = ({ isSelected, toggle }) => {
     const { isLoading, tags } = useTags();
 
-    const header = (
-        <Containers.DefaultContainer>
-            <Labels.Subheader title="Доступные тэги" />
-        </Containers.DefaultContainer>
-    );
-
     const tagsView = (
         <Containers.DefaultContainer>
             {tags.map((x) => (
@@ -34,7 +28,6 @@ export const Tags: React.FC<Props> = ({ isSelected, toggle }) => {
 
     return (
         <>
-            {header}
             {isLoading && (
                 <Containers.DefaultContainer>
                     <Signals.Loader />
