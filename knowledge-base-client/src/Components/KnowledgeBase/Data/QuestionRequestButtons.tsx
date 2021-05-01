@@ -115,7 +115,14 @@ export const QuestionRequestButtons: React.FC<Props> = ({
                                         .split(",")
                                         .map((x) => x.trim())
                                 )
-                                .then((x) => setIsOpenedCreationModal(false));
+                                .then((x) => {
+                                    setNewQuestionData({
+                                        answer: "",
+                                        question: "",
+                                        tags: "",
+                                    });
+                                    setIsOpenedCreationModal(false);
+                                });
                         }}
                         title={"Загрузить новый вопрос"}
                     />
