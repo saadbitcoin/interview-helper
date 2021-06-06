@@ -6,12 +6,14 @@ export function useTags() {
     const [isLoading, setIsLoading] = useState(true);
     const [tags, setTags] = useState([] as Array<Tag>);
 
+    const addTag = (tag: Tag) => setTags((x) => [...x, tag]);
+
     useEffect(() => {
         let isMounted = true;
 
         tagsAPIClient.getAll().then((x) => {
             if (isMounted) {
-                setTags(x.tags);
+                setTags(x);
                 setIsLoading(false);
             }
         });
@@ -21,5 +23,5 @@ export function useTags() {
         };
     }, []);
 
-    return { isLoading, tags };
+    return { isLoading, tags, addTag };
 }

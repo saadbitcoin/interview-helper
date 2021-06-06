@@ -3,35 +3,24 @@ import { Question } from "../../Models";
 class QuestionsAPIClient {
     public constructor(private endpoint: string) {}
 
-    public async getByTagsIntersection(tagIds: Array<number>) {
+    public async getByTags(tagIds: Array<number>) {
         const request = await fetch(
-            `${this.endpoint}/questions/byTagsIntersection?${tagIds
-                .map((x) => "tagIds=" + x)
-                .join("&")}`
+            `${this.endpoint}/questions/unionTagged/${tagIds.join(",")}`
         );
-        return request.json() as Promise<{ questions: Array<Question> }>;
-    }
-
-    public async getByTagsUnion(tagIds: Array<number>) {
-        const request = await fetch(
-            `${this.endpoint}/questions/byTagsUnion?${tagIds
-                .map((x) => "tagIds=" + x)
-                .join("&")}`
-        );
-        return request.json() as Promise<{ questions: Array<Question> }>;
+        return request.json() as Promise<Array<Question>>;
     }
 
     public async createNew(
-        question: string,
+        title: string,
         answer: string,
-        tags: Array<string>
+        tagIds: Array<number>
     ) {
         const request = await fetch(`${this.endpoint}/questions`, {
             method: "POST",
             body: JSON.stringify({
-                question,
+                title,
                 answer,
-                accordingTags: tags,
+                tagIds,
             }),
             headers: {
                 "Content-Type": "application/json",

@@ -1,4 +1,3 @@
-import { useTags } from "../../../Hooks";
 import { Tag } from "../../../Models";
 import React from "react";
 import { Controls, Signals, Containers } from "../../../Views";
@@ -6,11 +5,16 @@ import { Controls, Signals, Containers } from "../../../Views";
 interface Props {
     isSelected: (tag: Tag) => boolean;
     toggle: (tag: Tag) => void;
+    tags: Tag[];
+    isLoading: boolean;
 }
 
-export const Tags: React.FC<Props> = ({ isSelected, toggle }) => {
-    const { isLoading, tags } = useTags();
-
+export const Tags: React.FC<Props> = ({
+    isSelected,
+    toggle,
+    tags,
+    isLoading,
+}) => {
     const tagsView = (
         <Containers.DefaultContainer>
             {tags.map((x) => (
