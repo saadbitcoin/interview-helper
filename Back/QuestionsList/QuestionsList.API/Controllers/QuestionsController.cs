@@ -98,5 +98,40 @@ namespace QuestionsList.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
+
+        /// <summary>
+        /// Returns selection of given size of given tag random questions.
+        /// </summary>
+        /// <param name="tagId">Required tag identifier</param>
+        /// <param name="count">Selection size</param>
+        /// <example>
+        /// curl -i -X GET "http://localhost:5000/questions/randomQuestionsByTag?tagId=1&count=5"
+        /// </example>
+        [HttpGet("randomQuestionsByTag")]
+        public async Task<IActionResult> GetRandomQuestionsByTag([FromQuery] int tagId, [FromQuery] int count)
+        {
+            var requiredQuestionsSelection = new PgTaggedRandomQuestions(_pgConnectionString, tagId);
+            var questions = await requiredQuestionsSelection.RandomElements(count);
+            var questionsJSONArray = new JSONArrayAsync(questions);
+            var questionsAsJSON = await questionsJSONArray.JSON();
+
+            return Ok(questionsAsJSON);
+        }
+
+        /// <summary>
+        /// Returns full question info by question identifier,
+        /// </summary>
+        /// <param name="id">Required question id</param>
+        /// <example>
+        /// curl -i -X GET http://localhost:5000/questions/5
+        /// </example>
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var question = new PgQuestion(id, _pgConnectionString);
+            var jsonRepresentation = await question.JSON();
+
+            return Ok(jsonRepresentation);
+        }
     }
 }

@@ -1,3 +1,5 @@
+using Npgsql;
+
 namespace QuestionsList.Infrastructure.PgEntities.Base
 {
     public abstract class PgEntity
@@ -7,6 +9,11 @@ namespace QuestionsList.Infrastructure.PgEntities.Base
         protected PgEntity(string connectionString)
         {
             _connectionString = connectionString;
+        }
+
+        protected NpgsqlConnection Connection()
+        {
+            return new NpgsqlConnection(_connectionString);
         }
     }
 }

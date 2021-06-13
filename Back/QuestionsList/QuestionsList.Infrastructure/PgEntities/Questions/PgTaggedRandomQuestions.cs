@@ -1,0 +1,45 @@
+using System.Threading.Tasks;
+using QuestionsList.Core.EntityContracts;
+using QuestionsList.Infrastructure.PgEntities.Base;
+using SharedKernel.Selections;
+using Dapper;
+using System.Linq;
+using QuestionsList.Core.Entities;
+using QuestionsList.Infrastructure.PgEntities.Tags;
+
+namespace QuestionsList.Infrastructure.PgEntities.Questions
+{
+    public sealed class PgTaggedRandomQuestions : PgEntity, IRandomAccessSelectionAsync<IQuestion>
+    {
+        private readonly int _tagId;
+
+        public PgTaggedRandomQuestions(string connectionString, int tagId) : base(connectionString)
+        {
+            _tagId = tagId;
+        }
+
+        public async Task<IQuestion[]> RandomElements(int count)
+        {
+            using (var connection = Connection())
+            {
+                var questionsData = await connection.QueryAsync($@"
+                    SELECT * FROM questions WHERE id IN (
+                        SELECT question_id FROM question_tags WHERE tag_id = {_tagId}
+                    )
+                    ORDER BY RANDOM()
+                    LIMIT {count}
+                ");
+
+
+                var questions = await Task.WhenAll(questionsData.Select(async x =>
+                {
+                    var tagsSelection = new PgTagSelectionByQuestionIdentifier(_connectionString, x.id);
+                    var tags = await tagsSelection.Elements();
+                    return new PrefilledQuestion(x.id, x.title, x.answer, tags);
+                }));
+
+                return questions;
+            }
+        }
+    }
+}

@@ -22,8 +22,7 @@ namespace SharedKernel.JSON
         public async Task<string> JSON()
         {
             var itemsJSONRepresentation = await Task.WhenAll(_items.Select(x => x.JSON()));
-            var deserializedItems = itemsJSONRepresentation.Select(x => JsonConvert.DeserializeObject(x));
-
+            var deserializedItems = itemsJSONRepresentation.Select(JsonConvert.DeserializeObject);
             return JsonConvert.SerializeObject(deserializedItems);
         }
     }

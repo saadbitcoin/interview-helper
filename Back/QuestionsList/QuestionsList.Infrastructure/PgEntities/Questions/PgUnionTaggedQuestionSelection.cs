@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using QuestionsList.Core.EntityContracts;
-using Npgsql;
 using Dapper;
 using System.Linq;
 using QuestionsList.Core.Entities;
@@ -40,7 +39,7 @@ namespace QuestionsList.Infrastructure.PgEntities.Questions
 
         private async Task<IQuestion[]> GetElements(string query)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = Connection())
             {
                 var questionData = await connection.QueryAsync(query);
                 return questionData.GroupBy(x => x.id).Select(x =>

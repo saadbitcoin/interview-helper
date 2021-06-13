@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using QuestionsList.Core.EntityContracts;
 using QuestionsList.Infrastructure.PgEntities.Base;
-using Npgsql;
 using Dapper;
 using System.Linq;
 
@@ -24,7 +23,7 @@ namespace QuestionsList.Infrastructure.PgEntities.Questions
 
         public async Task<int> Add(string title, string answer, int[] tagIds)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = Connection())
             {
                 int questionId = await connection.QueryFirstAsync<int>(InsertQuestionReturningIdSQL(title, answer));
                 await connection.ExecuteAsync(InsertQuestionTagsSQL(questionId, tagIds));
@@ -35,7 +34,7 @@ namespace QuestionsList.Infrastructure.PgEntities.Questions
 
         public async Task<IQuestion[]> LastAdded(int count)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = Connection())
             {
                 var questionIds = await connection.QueryAsync(LastAddedQuestionIdsSQL(count));
 
