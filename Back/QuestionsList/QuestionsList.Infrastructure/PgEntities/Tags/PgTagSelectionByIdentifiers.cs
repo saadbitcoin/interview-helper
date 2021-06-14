@@ -2,10 +2,8 @@ using System.Threading.Tasks;
 using QuestionsList.Core.Entities;
 using QuestionsList.Core.EntityContracts;
 using SharedKernel.Selections;
-using Npgsql;
-using Dapper;
 using System.Linq;
-using QuestionsList.Infrastructure.PgEntities.Base;
+using SharedKernel.Database;
 
 namespace QuestionsList.Infrastructure.PgEntities.Tags
 {
@@ -22,13 +20,10 @@ namespace QuestionsList.Infrastructure.PgEntities.Tags
 
         public async Task<ITag[]> Elements()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var result = await connection.QueryAsync(ElementsObtainingSQL);
-                var prefilledTags = result.Select(x => new PrefilledTag(x.id, x.title));
+            var result = await Query(ElementsObtainingSQL);
+            var prefilledTags = result.Select(x => new PrefilledTag(x.id, x.title));
 
-                return prefilledTags.ToArray();
-            }
+            return prefilledTags.ToArray();
         }
     }
 }

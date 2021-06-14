@@ -1,8 +1,6 @@
 using System.Threading.Tasks;
 using QuestionsList.Core.EntityContracts;
-using QuestionsList.Infrastructure.PgEntities.Base;
-using Npgsql;
-using Dapper;
+using SharedKernel.Database;
 using System.Linq;
 using QuestionsList.Core.Entities;
 
@@ -22,21 +20,14 @@ namespace QuestionsList.Infrastructure.PgEntities.Tags
 
         public async Task<int> Add(string title)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                System.Console.Write(AddTagSQL(title));
-                var newTagId = await connection.QueryFirstAsync<int>(AddTagSQL(title));
-                return newTagId;
-            }
+            var newTagId = await QueryFirst<int>(AddTagSQL(title));
+            return newTagId;
         }
 
         public async Task<ITag[]> Elements()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var tagsData = await connection.QueryAsync(AllTagsSQL);
-                return tagsData.Select(x => new PrefilledTag(x.id, x.title)).ToArray();
-            }
+            var tagsData = await Query(AllTagsSQL);
+            return tagsData.Select(x => new PrefilledTag(x.id, x.title)).ToArray();
         }
     }
 }

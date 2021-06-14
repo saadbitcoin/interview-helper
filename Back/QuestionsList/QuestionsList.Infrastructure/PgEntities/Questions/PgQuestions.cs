@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using QuestionsList.Core.EntityContracts;
-using QuestionsList.Infrastructure.PgEntities.Base;
-using Dapper;
+using SharedKernel.Database;
 using System.Linq;
 
 namespace QuestionsList.Infrastructure.PgEntities.Questions
@@ -23,23 +22,17 @@ namespace QuestionsList.Infrastructure.PgEntities.Questions
 
         public async Task<int> Add(string title, string answer, int[] tagIds)
         {
-            using (var connection = Connection())
-            {
-                int questionId = await connection.QueryFirstAsync<int>(InsertQuestionReturningIdSQL(title, answer));
-                await connection.ExecuteAsync(InsertQuestionTagsSQL(questionId, tagIds));
+            int questionId = await QueryFirst<int>(InsertQuestionReturningIdSQL(title, answer));
+            await Query(InsertQuestionTagsSQL(questionId, tagIds));
 
-                return questionId;
-            }
+            return questionId;
         }
 
         public async Task<IQuestion[]> LastAdded(int count)
         {
-            using (var connection = Connection())
-            {
-                var questionIds = await connection.QueryAsync(LastAddedQuestionIdsSQL(count));
+            var questionIds = await Query(LastAddedQuestionIdsSQL(count));
 
-                return questionIds.Select(x => new PgQuestion(x.id, _connectionString)).ToArray();
-            }
+            return questionIds.Select(x => new PgQuestion(x.id, _connectionString)).ToArray();
         }
     }
 }

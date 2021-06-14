@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using QuestionsList.Core.EntityContracts;
-using QuestionsList.Infrastructure.PgEntities.Base;
+using SharedKernel.Database;
 using SharedKernel.Selections;
 using Dapper;
 using System.Linq;
@@ -20,26 +20,22 @@ namespace QuestionsList.Infrastructure.PgEntities.Questions
 
         public async Task<IQuestion[]> RandomElements(int count)
         {
-            using (var connection = Connection())
+            var questionsData = await Query($@"
+                SELECT * FROM questions WHERE id IN (
+                    SELECT question_id FROM question_tags WHERE tag_id = {_tagId}
+                )
+                ORDER BY RANDOM()
+                LIMIT {count}
+            ");
+
+            var questions = await Task.WhenAll(questionsData.Select(async x =>
             {
-                var questionsData = await connection.QueryAsync($@"
-                    SELECT * FROM questions WHERE id IN (
-                        SELECT question_id FROM question_tags WHERE tag_id = {_tagId}
-                    )
-                    ORDER BY RANDOM()
-                    LIMIT {count}
-                ");
+                var tagsSelection = new PgTagSelectionByQuestionIdentifier(_connectionString, x.id);
+                var tags = await tagsSelection.Elements();
+                return new PrefilledQuestion(x.id, x.title, x.answer, tags);
+            }));
 
-
-                var questions = await Task.WhenAll(questionsData.Select(async x =>
-                {
-                    var tagsSelection = new PgTagSelectionByQuestionIdentifier(_connectionString, x.id);
-                    var tags = await tagsSelection.Elements();
-                    return new PrefilledQuestion(x.id, x.title, x.answer, tags);
-                }));
-
-                return questions;
-            }
+            return questions;
         }
     }
 }

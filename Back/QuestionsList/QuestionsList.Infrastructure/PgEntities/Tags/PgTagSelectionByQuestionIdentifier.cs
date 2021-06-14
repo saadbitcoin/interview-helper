@@ -1,8 +1,7 @@
 using System.Threading.Tasks;
 using QuestionsList.Core.EntityContracts;
-using QuestionsList.Infrastructure.PgEntities.Base;
+using SharedKernel.Database;
 using SharedKernel.Selections;
-using Dapper;
 using System.Linq;
 using QuestionsList.Core.Entities;
 
@@ -19,16 +18,13 @@ namespace QuestionsList.Infrastructure.PgEntities.Tags
 
         public async Task<ITag[]> Elements()
         {
-            using (var connection = Connection())
-            {
-                var tagsData = await connection.QueryAsync($@"
+            var tagsData = await Query($@"
                     SELECT * FROM tags WHERE id IN (
                         SELECT tag_id FROM question_tags WHERE question_id = {_questionId}
                     )
                 ");
 
-                return tagsData.Select(x => new PrefilledTag(x.id, x.title)).ToArray();
-            }
+            return tagsData.Select(x => new PrefilledTag(x.id, x.title)).ToArray();
         }
     }
 }

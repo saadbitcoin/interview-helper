@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 using QuestionsList.Core.EntityContracts;
-using Dapper;
 using System.Linq;
 using QuestionsList.Core.Entities;
-using QuestionsList.Infrastructure.PgEntities.Base;
+using SharedKernel.Database;
 
 namespace QuestionsList.Infrastructure.PgEntities.Questions
 {
@@ -39,16 +38,13 @@ namespace QuestionsList.Infrastructure.PgEntities.Questions
 
         private async Task<IQuestion[]> GetElements(string query)
         {
-            using (var connection = Connection())
+            var questionData = await Query(query);
+            return questionData.GroupBy(x => x.id).Select(x =>
             {
-                var questionData = await connection.QueryAsync(query);
-                return questionData.GroupBy(x => x.id).Select(x =>
-                {
-                    var question = x.First();
-                    var tags = x.Select(x => new PrefilledTag(x.tag_id, x.tag_title));
-                    return new PrefilledQuestion(question.id, question.title, question.answer, tags);
-                }).ToArray();
-            }
+                var question = x.First();
+                var tags = x.Select(x => new PrefilledTag(x.tag_id, x.tag_title));
+                return new PrefilledQuestion(question.id, question.title, question.answer, tags);
+            }).ToArray();
         }
 
         public Task<IQuestion[]> Elements() => GetElements(QuestionDataObtainingSQL);

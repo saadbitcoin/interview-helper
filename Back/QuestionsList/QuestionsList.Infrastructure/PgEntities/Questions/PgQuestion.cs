@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
 using QuestionsList.Core.EntityContracts;
-using Dapper;
 using SharedKernel.JSON;
 using Newtonsoft.Json;
 using QuestionsList.Infrastructure.PgEntities.Tags;
-using QuestionsList.Infrastructure.PgEntities.Base;
+using SharedKernel.Database;
 
 namespace QuestionsList.Infrastructure.PgEntities.Questions
 {
@@ -21,23 +20,19 @@ namespace QuestionsList.Infrastructure.PgEntities.Questions
 
         public async Task<string> JSON()
         {
-            using (var connection = Connection())
+            var questionData = await QueryFirst(QuestionObtainingSQL);
+            var tagSelection = new PgTagSelectionByQuestionIdentifier(_connectionString, questionData.id);
+            var tags = await tagSelection.Elements();
+            var tagsJSONArray = new JSONArrayAsync(tags);
+            var tagsArrayAsJSON = await tagsJSONArray.JSON();
+
+            return JsonConvert.SerializeObject(new
             {
-                var questionData = await connection.QueryFirstAsync(QuestionObtainingSQL);
-
-                var tagSelection = new PgTagSelectionByQuestionIdentifier(_connectionString, questionData.id);
-                var tags = await tagSelection.Elements();
-                var tagsJSONArray = new JSONArrayAsync(tags);
-                var tagsArrayAsJSON = await tagsJSONArray.JSON();
-
-                return JsonConvert.SerializeObject(new
-                {
-                    id = questionData.id,
-                    title = questionData.title,
-                    answer = questionData.answer,
-                    tags = JsonConvert.DeserializeObject(tagsArrayAsJSON)
-                });
-            }
+                id = questionData.id,
+                title = questionData.title,
+                answer = questionData.answer,
+                tags = JsonConvert.DeserializeObject(tagsArrayAsJSON)
+            });
         }
     }
 }
