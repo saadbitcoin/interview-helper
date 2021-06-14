@@ -34,7 +34,7 @@ jobs:
         with:
           dotnet-version: 5.0.x
       - name: Initialize PG
-        run: cd ./Back/QuestionsList/QuestionsList.Infrastructure && bash ./initialize_postgres.sh
+        run: cd ./Back/QuestionsList/QuestionsList.Infrastructure.Test && bash ./initialize_test_database.sh
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
