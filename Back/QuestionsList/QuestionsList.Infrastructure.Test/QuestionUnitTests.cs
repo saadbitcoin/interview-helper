@@ -22,11 +22,13 @@ namespace QuestionsList.Infrastructure.Test
             var json = question.JSON().Result;
             var deserializedQuestion = JsonConvert.DeserializeObject<dynamic>(json);
             dynamic[] tagsArray = deserializedQuestion.tags.ToObject<dynamic[]>();
+
             Assert.True(deserializedQuestion.title == "question_title");
             Assert.True(deserializedQuestion.answer == "question_answer");
+
             Assert.True(tagsArray.Length == 2);
-            Assert.True(tagsArray.Any(x => x.id == firstTagId && x.title == "tag_1"));
-            Assert.True(tagsArray.Any(x => x.id == secondTagId && x.title == "tag_2"));
+            Assert.Contains(tagsArray, x => x.id == firstTagId && x.title == "tag_1");
+            Assert.Contains(tagsArray, x => x.id == secondTagId && x.title == "tag_2");
         }
     }
 }
