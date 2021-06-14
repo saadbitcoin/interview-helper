@@ -6,17 +6,29 @@ on:
   pull_request:
     branches: [ main ]
 
+
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     steps:
-    - name: Setup PostgreSQL
-      uses: Harmon758/postgresql-action@v1.0.0
-      with:
-        POSTGRES_USER: POSTGRES
-        POSTGRES_PASSWORD: POSTGRES
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
@@ -24,6 +36,10 @@ jobs:
         dotnet-version: 5.0.x
     - name: Test PG
       run: cd ./Back/QuestionsList/QuestionsList.Infrastructure && bash ./intialize_postgres.sh
+      env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+
 
 
 
