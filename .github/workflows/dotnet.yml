@@ -23,7 +23,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Test PG
-      run: cd ./Back/QuestionsList/QuestionsList.Infrastructure && bash initialize_postgres.sh
+      run: cd ./Back/QuestionsList/QuestionsList.Infrastructure && bash ./intialize_postgres.sh
 
 
 
