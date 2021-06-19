@@ -9,7 +9,8 @@ interface Props {
 
 export const QuestionCard: React.FC<Props> = ({ data }) => {
     const { label, text } = useSharedStyles();
-    const { answer, id, tags, title } = data;
+    const { tags } = data;
+    const { answer, id, title } = data.question;
 
     return (
         <Box width={1 / 3} m="1.5rem" padding="1rem">
@@ -17,7 +18,6 @@ export const QuestionCard: React.FC<Props> = ({ data }) => {
                 <Typography className={`${label} ${text}`} variant="subtitle1">
                     (#{id}) {title}
                 </Typography>
-
                 {tags.map((x) => (
                     <Chip
                         label={x.title}

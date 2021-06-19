@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using TestInterview.Core.EntityContracts;
-using Newtonsoft.Json;
+using MicroserviceHandlers.Contracts.TestInterview;
 
 namespace TestInterview.Core.Entities
 {
-    public sealed class PrefilledQuestion : IQuestion
+    public sealed class PrefilledQuestion : IInterviewQuestion
     {
         private readonly int _id;
         private readonly string _title;
@@ -15,13 +15,9 @@ namespace TestInterview.Core.Entities
             _title = title;
         }
 
-        public Task<string> JSON()
+        public Task<InterviewQuestionDTO> SerializableState()
         {
-            return Task.FromResult(JsonConvert.SerializeObject(new
-            {
-                id = _id,
-                title = _title
-            }));
+            return Task.FromResult(new InterviewQuestionDTO(_id, _title));
         }
     }
 }

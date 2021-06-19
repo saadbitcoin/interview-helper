@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\QuestionsList.Infrastructure\QuestionsList.Infrastructure.csproj" />
     <ProjectReference Include="..\..\SharedKernel\SharedKernel.csproj" />
+    <ProjectReference Include="..\..\MicroserviceHandlers\MicroserviceHandlers.csproj" />
   </ItemGroup>
 
 </Project>

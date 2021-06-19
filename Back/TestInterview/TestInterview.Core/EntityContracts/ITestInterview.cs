@@ -4,7 +4,7 @@ namespace TestInterview.Core.EntityContracts
 {
     public interface ITestInterview
     {
-        Task<IQuestion[]> Questions();
+        Task<IInterviewQuestion[]> Questions();
         Task MarkUnanswered(int questionId);
     }
 }

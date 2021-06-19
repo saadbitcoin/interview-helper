@@ -4,15 +4,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
-using QuestionsList.Infrastructure.PgEntities.Questions;
-using SharedKernel.JSON;
+using QuestionsList.Infrastructure.Entities.Questions;
 using SharedKernel.HTTPRouteObjects;
+using MicroserviceHandlers.Contracts.QuestionsList;
+using QuestionsList.API.Extenstions;
 
 namespace QuestionsList.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("questions")]
     public class QuestionsController : ControllerBase
     {
         private readonly string _pgConnectionString;
@@ -22,32 +22,18 @@ namespace QuestionsList.API.Controllers
             _pgConnectionString = configuration.GetConnectionString("Postgres");
         }
 
-        /// <summary>
-        /// Returns recently added questions.
-        /// </summary>
-        /// <param name="count">Required questions count</param>
-        /// <example>
-        /// curl -i -X GET http://localhost:5000/questions/recentlyAdded?count=10
-        /// </example>
         [HttpGet("recentlyAdded")]
-        public async Task<IActionResult> GetRecentlyAdded([FromQuery] int count)
+        public async Task<ActionResult<QuestionWithTagSchema[]>> GetRecentlyAdded([FromQuery] int count)
         {
             var questions = new PgQuestions(_pgConnectionString);
             var result = await questions.LastAdded(count);
-            var resultJSONArray = new JSONArrayAsync(result);
-            var resultJSON = await resultJSONArray.JSON();
-            return StatusCode(StatusCodes.Status200OK, resultJSON);
+            var questionStates = await Task.WhenAll(result.Select(x => x.ToFullDTO()));
+
+            return Ok(questionStates);
         }
 
-        /// <summary>
-        /// Returns union tagged questions.
-        /// </summary>
-        /// <param name="tagIdsRequest">Required tag ids separated by ","</param>
-        /// <example>
-        /// curl -i -X GET http://localhost:5000/questions/unionTagged/1,3,5
-        /// </example>
         [HttpGet("unionTagged/{tagIdsRequest}")]
-        public async Task<IActionResult> GetByTagsUnion([FromRoute] string tagIdsRequest)
+        public async Task<ActionResult<QuestionWithTagSchema[]>> GetByTagsUnion([FromRoute] string tagIdsRequest)
         {
             var tagIdsRouteArray = new HTTPRouteArray<int>(tagIdsRequest, int.Parse);
             var tagIds = tagIdsRouteArray.Result;
@@ -57,41 +43,25 @@ namespace QuestionsList.API.Controllers
             }
             var unionTaggedQuestions = new PgUnionTaggedQuestionSelection(tagIds, _pgConnectionString);
             var questions = await unionTaggedQuestions.Elements();
-            var questionsJSONArray = new JSONArrayAsync(questions);
-            var questionsAsJSON = await questionsJSONArray.JSON();
-            return StatusCode(StatusCodes.Status200OK, questionsAsJSON);
+            var questionsData = await Task.WhenAll(questions.Select(x => x.ToFullDTO()));
+
+            return Ok(questionsData);
         }
 
-        /// <summary>
-        /// Creates a new question.
-        /// </summary>
-        /// <param name="request">JObject of {"title": string, "answer": string, "tagIds": number[]}</param>
-        /// <example>
-        /// curl -i -H "Content-Type: application/json" -X POST -d '{"title": "1", "answer": "2", "tagIds": [4,5]}' http://localhost:5000/questions
-        /// </example>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] JObject request)
+        public async Task<ActionResult<QuestionCreationResponseModel>> Create([FromBody] QuestionCreationRequestModel request)
         {
-            var title = request.Value<string>("title");
-            if (string.IsNullOrEmpty(title))
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "Title was not provided");
-            }
-            var answer = request.Value<string>("answer");
-            if (string.IsNullOrEmpty(answer))
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "Answer was not provided");
-            }
-            var tagIds = request.Value<JArray>("tagIds").Values<int>().ToArray();
-            if (tagIds.Length == 0)
+            if (request.tagIds.Length == 0)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, "Tag identifiers were not provided");
             }
+
             var questions = new PgQuestions(_pgConnectionString);
             try
             {
-                var newQuestionId = await questions.Add(title, answer, tagIds);
-                return StatusCode(StatusCodes.Status201Created, newQuestionId);
+                var newQuestionId = await questions.Add(request.title, request.answer, request.tagIds);
+
+                return StatusCode(StatusCodes.Status201Created, new QuestionCreationResponseModel(newQuestionId));
             }
             catch (Exception e)
             {
@@ -99,39 +69,23 @@ namespace QuestionsList.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Returns selection of given size of given tag random questions.
-        /// </summary>
-        /// <param name="tagId">Required tag identifier</param>
-        /// <param name="count">Selection size</param>
-        /// <example>
-        /// curl -i -X GET "http://localhost:5000/questions/randomQuestionsByTag?tagId=1&count=5"
-        /// </example>
         [HttpGet("randomQuestionsByTag")]
-        public async Task<IActionResult> GetRandomQuestionsByTag([FromQuery] int tagId, [FromQuery] int count)
+        public async Task<ActionResult<QuestionWithTagSchema[]>> GetRandomQuestionsByTag([FromQuery] int tagId, [FromQuery] int count)
         {
-            var requiredQuestionsSelection = new PgTaggedRandomQuestions(_pgConnectionString, tagId);
+            var requiredQuestionsSelection = new PgTagRandomQuestions(_pgConnectionString, tagId);
             var questions = await requiredQuestionsSelection.RandomElements(count);
-            var questionsJSONArray = new JSONArrayAsync(questions);
-            var questionsAsJSON = await questionsJSONArray.JSON();
+            var questionsData = await Task.WhenAll(questions.Select(x => x.ToFullDTO()));
 
-            return Ok(questionsAsJSON);
+            return Ok(questionsData);
         }
 
-        /// <summary>
-        /// Returns full question info by question identifier,
-        /// </summary>
-        /// <param name="id">Required question id</param>
-        /// <example>
-        /// curl -i -X GET http://localhost:5000/questions/5
-        /// </example>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        public async Task<ActionResult<QuestionWithTagSchema>> GetById([FromRoute] int id)
         {
             var question = new PgQuestion(id, _pgConnectionString);
-            var jsonRepresentation = await question.JSON();
+            var questionData = await question.ToFullDTO();
 
-            return Ok(jsonRepresentation);
+            return Ok(questionData);
         }
     }
 }

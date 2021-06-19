@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\QuestionsList.Core\QuestionsList.Core.csproj" />
     <ProjectReference Include="..\..\SharedKernel\SharedKernel.csproj" />
+    <ProjectReference Include="..\..\MicroserviceHandlers\MicroserviceHandlers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

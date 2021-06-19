@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestInterview.Core\TestInterview.Core.csproj" />
+    <ProjectReference Include="..\..\MicroserviceHandlers\MicroserviceHandlers.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
