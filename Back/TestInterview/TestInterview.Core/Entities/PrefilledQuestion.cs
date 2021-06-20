@@ -15,9 +15,9 @@ namespace TestInterview.Core.Entities
             _title = title;
         }
 
-        public Task<InterviewQuestionDTO> SerializableState()
+        public Task<InterviewQuestionSchema> SerializableState()
         {
-            return Task.FromResult(new InterviewQuestionDTO(_id, _title));
+            return Task.FromResult(new InterviewQuestionSchema(_id, _title));
         }
     }
 }
