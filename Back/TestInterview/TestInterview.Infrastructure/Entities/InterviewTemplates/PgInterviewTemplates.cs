@@ -14,13 +14,13 @@ namespace TestInterview.Infrastructure.Entities.InterviewTemplates
         }
 
         private string TestInterviewTemplateCreatingSQL(string title) =>
-            $"INSERT INTO test_interview_templates (title) VALUES ('${title}') RETURNING id";
+            $"INSERT INTO test_interview_templates (title) VALUES ('{title}') RETURNING id";
 
         private string QuestionDataLinkingSQL(int templateId, (int tagId, int count)[] questionData) => $@"
             INSERT INTO 
                 test_interview_template_questions (tag_id, questions_count, template_id) 
             VALUES 
-                ${string.Join(", ", questionData.Select(x => $"({x.tagId}, {x.count}, {templateId})"))}
+                {string.Join(", ", questionData.Select(x => $"({x.tagId}, {x.count}, {templateId})"))}
         ";
 
         private string TestInterviewTemplatesObtainingSQL

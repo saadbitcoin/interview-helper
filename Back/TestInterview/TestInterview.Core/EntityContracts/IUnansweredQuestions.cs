@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using MicroserviceHandlers.Contracts.QuestionsList;
-using SharedKernel.Selections;
 
 namespace TestInterview.Core.EntityContracts
 {

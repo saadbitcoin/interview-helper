@@ -11,9 +11,6 @@ CREATE TABLE test_interview_template_questions(
     questions_count INT NOT NULL,
     template_id INT NOT NULL,
     
-    CONSTRAINT unique_tag_info
-        UNIQUE(tag_id, template_id),
-    
     CONSTRAINT fk_test_interview_template
         FOREIGN KEY(template_id)
         REFERENCES test_interview_templates(id)
