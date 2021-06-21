@@ -1,11 +1,15 @@
+type QuestionData = {
+    id: number;
+    title: string;
+    answer: string;
+};
+
 export type Tag = {
     id: number;
     title: string;
 };
 
 export type Question = {
-    id: number;
-    title: string;
-    answer: string;
+    question: QuestionData;
     tags: Array<Tag>;
 };

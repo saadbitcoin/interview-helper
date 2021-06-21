@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using QuestionsList.Core.EntityContracts;
+using MicroserviceHandlers.Contracts.QuestionsList;
 
 namespace QuestionsList.Core.Entities
 {
@@ -15,15 +15,9 @@ namespace QuestionsList.Core.Entities
             _title = title;
         }
 
-        public Task<string> JSON()
+        public Task<TagSchema> SerializableState()
         {
-            return Task.FromResult(
-                JsonConvert.SerializeObject(new
-                {
-                    id = _id,
-                    title = _title
-                })
-            );
+            return Task.FromResult(new TagSchema(_id, _title));
         }
     }
 }

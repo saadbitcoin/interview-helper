@@ -4,14 +4,14 @@ import { Button as MaterialButton, Grid } from "@material-ui/core";
 interface Props {
     title: string;
     onClick: () => void;
-    disabled: boolean;
+    disabled?: boolean;
     type?: "primary" | "secondary";
 }
 
 export const Button: React.FC<Props> = ({
     onClick,
     title,
-    disabled,
+    disabled = false,
     type = "primary",
 }) => {
     return (

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using QuestionsList.Core.EntityContracts;
-using SharedKernel.JSON;
+using MicroserviceHandlers.Contracts.QuestionsList;
 
 namespace QuestionsList.Core.Entities
 {
@@ -27,19 +26,14 @@ namespace QuestionsList.Core.Entities
             _tags = tags;
         }
 
-        public async Task<string> JSON()
+        public Task<QuestionSchema> SerializableState()
         {
-            var tagsAsJSONArray = new JSONArrayAsync(_tags);
-            var tagsJSON = await tagsAsJSONArray.JSON();
-            return JsonConvert.SerializeObject(
-                new
-                {
-                    id = _id,
-                    title = _title,
-                    answer = _answer,
-                    tags = JsonConvert.DeserializeObject(tagsJSON)
-                }
-            );
+            return Task.FromResult(new QuestionSchema(_id, _title, _answer));
+        }
+
+        public Task<ITag[]> Tags()
+        {
+            return Task.FromResult(_tags);
         }
     }
 }

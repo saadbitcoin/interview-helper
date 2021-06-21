@@ -3,9 +3,9 @@ name: .NET
 on:
   push:
     branches:
-      - '**'
+      - "**"
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -28,17 +28,18 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    - name: Test PG
-      run: cd ./Back/QuestionsList/QuestionsList.Infrastructure && bash ./intialize_postgres.sh
-      env:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Initialize PG
+        run: cd ./Back/QuestionsList/QuestionsList.Infrastructure.Test && bash ./initialize_test_database.sh
+        env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
-
-
-
-
+      - name: Test PG
+        run: cd ./Back/QuestionsList/QuestionsList.Infrastructure.Test && dotnet restore && dotnet build --no-restore && dotnet test
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432

@@ -1,9 +1,9 @@
 import React from "react";
 import { render } from "react-dom";
-import { KnowledgeBaseApp } from "./Components";
+import { App } from "./Components";
 
 export const Index: React.FC = () => {
-    return <KnowledgeBaseApp />;
+    return <App />;
 };
 
 render(<Index />, document.getElementById("root"));
