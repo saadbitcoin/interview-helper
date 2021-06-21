@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
-using MicroserviceHandlers.Contracts.TestInterview;
 using SharedKernel.Serialization;
+using TestInterview.Core.Schemas;
 
 namespace TestInterview.Core.EntityContracts
 {
-    public interface ITestInterviewTemplate : IHasSerializableStateAsync<TestInterviewTemplateSchema>
+    public interface IInterviewTemplate : IHasSerializableStateAsync<InterviewTemplateSchema>
     {
         Task<IQuestionsData[]> QuestionsData();
     }

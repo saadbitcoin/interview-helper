@@ -1,5 +1,5 @@
-using MicroserviceHandlers.Contracts.TestInterview;
 using SharedKernel.Serialization;
+using TestInterview.Core.Schemas;
 
 namespace TestInterview.Core.EntityContracts
 {

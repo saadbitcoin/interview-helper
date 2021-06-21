@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using MicroserviceHandlers.Contracts.TestInterview;
 using TestInterview.Core.EntityContracts;
 
 namespace TestInterview.Core.Entities

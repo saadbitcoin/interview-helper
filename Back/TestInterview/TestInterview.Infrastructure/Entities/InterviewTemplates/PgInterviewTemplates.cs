@@ -4,11 +4,11 @@ using SharedKernel.Database;
 using TestInterview.Core.Entities;
 using TestInterview.Core.EntityContracts;
 
-namespace TestInterview.Infrastructure.Entities.TestInterviewTemplates
+namespace TestInterview.Infrastructure.Entities.InterviewTemplates
 {
-    public sealed class PgTestInterviewTemplates : PgEntity, ITestInterviewTemplates
+    public sealed class PgInterviewTemplates : PgEntity, IInterviewTemplates
     {
-        public PgTestInterviewTemplates(string connectionString) : base(connectionString)
+        public PgInterviewTemplates(string connectionString) : base(connectionString)
         {
 
         }
@@ -34,15 +34,14 @@ namespace TestInterview.Infrastructure.Entities.TestInterviewTemplates
             return id;
         }
 
-        public async Task<ITestInterviewTemplate[]> Elements()
+        public async Task<IInterviewTemplate[]> Elements()
         {
             var templatesRawData = await Query(TestInterviewTemplatesObtainingSQL);
-            return templatesRawData.Select(x =>
-            {
-                var pgTemplate = new PgTestInterviewTemplate(_connectionString, x.id);
-
-                return new PrefilledTestInterviewTemplate(pgTemplate, x.id, x.title);
-            }).ToArray();
+            return templatesRawData.Select(x => new PrefilledTestInterviewTemplate(
+                new PgInterviewTemplate(_connectionString, x.id),
+                x.id,
+                x.title
+            )).ToArray();
         }
     }
 }

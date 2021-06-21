@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using TestInterview.Core.EntityContracts;
-using MicroserviceHandlers.Contracts.TestInterview;
+using TestInterview.Core.Schemas;
 
 namespace TestInterview.Core.Entities
 {

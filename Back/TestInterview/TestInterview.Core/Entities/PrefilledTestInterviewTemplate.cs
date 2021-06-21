@@ -1,16 +1,16 @@
 using System.Threading.Tasks;
-using MicroserviceHandlers.Contracts.TestInterview;
 using TestInterview.Core.EntityContracts;
+using TestInterview.Core.Schemas;
 
 namespace TestInterview.Core.Entities
 {
-    public sealed class PrefilledTestInterviewTemplate : ITestInterviewTemplate
+    public sealed class PrefilledTestInterviewTemplate : IInterviewTemplate
     {
-        private readonly ITestInterviewTemplate _source;
+        private readonly IInterviewTemplate _source;
         private readonly int _id;
         private readonly string _title;
 
-        public PrefilledTestInterviewTemplate(ITestInterviewTemplate source, int id, string title)
+        public PrefilledTestInterviewTemplate(IInterviewTemplate source, int id, string title)
         {
             _source = source;
             _id = id;
@@ -19,9 +19,9 @@ namespace TestInterview.Core.Entities
 
         public Task<IQuestionsData[]> QuestionsData() => _source.QuestionsData();
 
-        public Task<TestInterviewTemplateSchema> SerializableState()
+        public Task<InterviewTemplateSchema> SerializableState()
         {
-            return Task.FromResult(new TestInterviewTemplateSchema(_id, _title));
+            return Task.FromResult(new InterviewTemplateSchema(_id, _title));
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using MicroserviceHandlers.Contracts.QuestionsList;
-using MicroserviceHandlers.Contracts.TestInterview;
 using TestInterview.Core.EntityContracts;
+using TestInterview.Core.Schemas;
 
 namespace TestInterview.Infrastructure.Entities.UnansweredQuestions
 {
