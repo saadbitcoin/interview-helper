@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - "**"
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
@@ -33,13 +31,8 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.x
-      - name: Initialize PG
-        run: cd ./Back/QuestionsList/QuestionsList.Infrastructure.Test && bash ./initialize_test_database.sh
-        env:
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
       - name: Test Questions list Infrastructure layer
-        run: cd ./Back/QuestionsList/QuestionsList.Infrastructure.Test && dotnet restore && dotnet build --no-restore && dotnet test
+        run: cd ./Back/QuestionsList/QuestionsList.Infrastructure.Test && bash ./initialize_test_database.sh && dotnet restore && dotnet build --no-restore && dotnet test
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
