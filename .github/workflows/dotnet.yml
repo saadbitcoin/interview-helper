@@ -38,7 +38,7 @@ jobs:
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
-      - name: Test PG
+      - name: Test Questions list Infrastructure layer
         run: cd ./Back/QuestionsList/QuestionsList.Infrastructure.Test && dotnet restore && dotnet build --no-restore && dotnet test
         env:
           POSTGRES_HOST: localhost
